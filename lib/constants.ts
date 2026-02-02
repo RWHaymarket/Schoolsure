@@ -1,0 +1,19 @@
+export const PRICING = {
+  COMPREHENSIVE_RATE: 0.03,
+  PLATINUM_RATE: 0.033,
+  STUDENT_COVER_WEEKLY: 4,
+  DEPOSITS_COVER_WEEKLY: 2,
+  ANNUAL_DISCOUNT: 0.1,
+  MULTI_CHILD_DISCOUNT: 0.15,
+  MIN_ANNUAL_FEE: 5000,
+  MAX_ANNUAL_FEE: 60000,
+  QUOTE_VALIDITY_DAYS: 14,
+  WAITING_PERIOD_DAYS: 30,
+  COOLING_OFF_DAYS: 14,
+} as const;
+
+export const CURRENCY = {
+  code: "AUD",
+  symbol: "$",
+  locale: "en-AU",
+} as const;
