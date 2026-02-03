@@ -14,7 +14,7 @@ export interface ButtonProps
 }
 
 const baseStyles =
-  "inline-flex items-center justify-center gap-2 font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none";
+  "inline-flex items-center justify-center gap-2 font-semibold leading-none transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-navy focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:transform-none";
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
@@ -56,7 +56,7 @@ export default function Button({
       {loading ? (
         <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
       ) : null}
-      <span>{children}</span>
+      <span className="inline-flex items-center gap-2 leading-none">{children}</span>
     </button>
   );
 }

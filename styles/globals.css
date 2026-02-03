@@ -1,0 +1,230 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-destructive: var(--destructive);
+
+  --color-navy: var(--color-brand-navy);
+  --color-off-white: var(--color-brand-off-white);
+  --color-magenta: var(--color-brand-magenta);
+  --color-magenta-dark: var(--color-brand-magenta-dark);
+  --color-magenta-light: var(--color-brand-magenta-light);
+  --color-grey-100: var(--color-grey-100);
+  --color-grey-300: var(--color-grey-300);
+  --color-grey-500: var(--color-grey-500);
+  --color-grey-700: var(--color-grey-700);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --color-info: var(--color-info);
+
+  --font-headline: var(--font-headline);
+  --font-body: var(--font-body);
+  --font-sans: var(--font-body);
+
+  --radius-sm: var(--radius-sm);
+  --radius: var(--radius);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+}
+
+:root {
+  /* Brand colors */
+  --color-brand-navy: #2d3e50;
+  --color-brand-off-white: #f8f9fa;
+  --color-brand-magenta: #d6336c;
+  --color-brand-magenta-dark: #c2255c;
+  --color-brand-magenta-light: #f0b8ca;
+  --color-grey-100: #f7fafc;
+  --color-grey-300: #e2e8f0;
+  --color-grey-500: #a0aec0;
+  --color-grey-700: #4a5568;
+  --color-success: #38a169;
+  --color-warning: #d97706;
+  --color-error: #e53e3e;
+  --color-info: #3182ce;
+
+  /* Typography */
+  --font-headline: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* UI colors */
+  --background: #ffffff;
+  --foreground: var(--color-brand-navy);
+  --card: #ffffff;
+  --card-foreground: var(--color-brand-navy);
+  --border: var(--color-grey-300);
+  --input: var(--color-grey-100);
+  --ring: rgba(45, 62, 80, 0.2);
+  --primary: var(--color-brand-magenta);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-brand-navy);
+  --secondary-foreground: #ffffff;
+  --muted: var(--color-brand-off-white);
+  --muted-foreground: var(--color-grey-700);
+  --accent: var(--color-brand-off-white);
+  --accent-foreground: var(--color-brand-navy);
+  --destructive: var(--color-error);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --shadow-magenta: 0 4px 16px rgba(214, 51, 108, 0.25);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1 {
+    font-size: 3rem;
+    line-height: 1.1;
+    font-weight: 900;
+    color: var(--color-brand-navy);
+  }
+
+  h2 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    font-weight: 900;
+    color: var(--color-brand-navy);
+  }
+
+  h3 {
+    font-size: 1.75rem;
+    line-height: 1.25;
+    font-weight: 600;
+    color: var(--color-brand-navy);
+  }
+
+  h4 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    font-weight: 600;
+    color: var(--color-brand-navy);
+  }
+
+  h5,
+  h6 {
+    font-weight: 600;
+    color: var(--color-brand-navy);
+  }
+
+  p {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 400;
+    color: var(--color-grey-700);
+  }
+
+  label {
+    @apply font-medium text-navy;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-navy ring-offset-2;
+  }
+
+  button:focus-visible,
+  a:focus-visible {
+    @apply ring-magenta;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    @apply transition-all duration-200 ease-out;
+  }
+}
+
+@layer utilities {
+  .text-h1 {
+    font-size: 3rem;
+    line-height: 1.1;
+    font-weight: 900;
+  }
+  .text-h2 {
+    font-size: 2.25rem;
+    line-height: 1.2;
+    font-weight: 900;
+  }
+  .text-h3 {
+    font-size: 1.75rem;
+    line-height: 1.25;
+    font-weight: 600;
+  }
+  .text-h4 {
+    font-size: 1.5rem;
+    line-height: 1.3;
+    font-weight: 600;
+  }
+  .text-body-lg {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .text-body {
+    font-size: 1rem;
+    line-height: 1.6;
+    font-weight: 400;
+  }
+  .text-small {
+    font-size: 0.875rem;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+  .text-caption {
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: 400;
+  }
+}

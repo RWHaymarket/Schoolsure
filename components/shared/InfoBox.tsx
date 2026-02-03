@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AlertTriangle, CheckCircle2, Info, Lightbulb } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Lightbulb, Lock } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -9,18 +9,27 @@ export interface InfoBoxProps extends React.HTMLAttributes<HTMLDivElement> {
   variant?: InfoBoxVariant;
 }
 
-const variantStyles: Record<InfoBoxVariant, string> = {
-  tip: "bg-[#EBF8FF] border-l-4 border-[#3182CE]",
-  warning: "bg-[#FFFBEB] border-l-4 border-[#D97706]",
-  success: "bg-[#F0FFF4] border-l-4 border-[#38A169]",
-  info: "bg-off-white border-l-4 border-navy",
-};
-
-const variantIcons: Record<InfoBoxVariant, React.ReactNode> = {
-  tip: <Lightbulb className="h-5 w-5 text-[#3182CE]" />,
-  warning: <AlertTriangle className="h-5 w-5 text-[#D97706]" />,
-  success: <CheckCircle2 className="h-5 w-5 text-[#38A169]" />,
-  info: <Info className="h-5 w-5 text-navy" />,
+const variants: Record<InfoBoxVariant, { container: string; icon: React.ReactNode; text: string }> = {
+  tip: {
+    container: "bg-blue-50 border-l-4 border-blue-500",
+    icon: <Lightbulb className="h-5 w-5 text-blue-500" />,
+    text: "text-blue-800",
+  },
+  warning: {
+    container: "bg-grey-100 border-l-4 border-grey-300",
+    icon: <AlertTriangle className="h-5 w-5 text-grey-500" />,
+    text: "text-grey-700",
+  },
+  success: {
+    container: "bg-green-50 border-l-4 border-green-500",
+    icon: <CheckCircle2 className="h-5 w-5 text-green-500" />,
+    text: "text-green-800",
+  },
+  info: {
+    container: "bg-grey-50 border-l-4 border-grey-400",
+    icon: <Lock className="h-5 w-5 text-grey-500" />,
+    text: "text-grey-700",
+  },
 };
 
 export default function InfoBox({
@@ -29,17 +38,18 @@ export default function InfoBox({
   children,
   ...props
 }: InfoBoxProps) {
+  const styles = variants[variant];
   return (
     <div
       className={cn(
-        "flex gap-3 rounded-r-lg p-4 text-sm text-navy",
-        variantStyles[variant],
+        "flex items-start gap-3 rounded-r-lg p-4",
+        styles.container,
         className,
       )}
       {...props}
     >
-      <div className="mt-0.5">{variantIcons[variant]}</div>
-      <div>{children}</div>
+      <div className="mt-0.5">{styles.icon}</div>
+      <p className={cn("text-sm", styles.text)}>{children}</p>
     </div>
   );
 }

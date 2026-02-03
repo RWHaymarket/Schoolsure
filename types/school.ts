@@ -1,0 +1,35 @@
+export interface School {
+  school_id: string;
+  school_name: string;
+  slug: string;
+  sector: "Independent" | "Catholic" | "Government";
+  gender: string;
+  year_levels_text: string;
+  boarding_school: boolean;
+  selective_school: boolean | "Yes" | "No" | null;
+  has_hsc: boolean | "Yes" | "No" | null;
+  denomination: string | null;
+  street_address: string | null;
+  suburb: string;
+  postcode: string;
+  state: string;
+  lga: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  phone: string | null;
+  email: string | null;
+  website_url: string | null;
+  fee_page_url: string | null;
+  enrolment_url: string | null;
+  tours_url: string | null;
+  latest_reports_url: string | null;
+  facebook_url: string | null;
+  instagram_url: string | null;
+  youtube_url: string | null;
+  extra_campuses: string | null;
+  icsea_value: number | null;
+  total_enrolment: number | null;
+  at_a_glance_summary: string | null;
+  culture_values: string | null;
+  school_card_summary: string | null;
+}

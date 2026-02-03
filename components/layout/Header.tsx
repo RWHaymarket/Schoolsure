@@ -6,6 +6,7 @@ import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Navigation from "@/components/layout/Navigation";
 import MobileNav from "@/components/layout/MobileNav";
+import { Logo } from "@/components/ui/Logo";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -23,15 +24,15 @@ export default function Header() {
         scrolled ? "shadow-[0_1px_3px_rgba(0,0,0,0.08)]" : "shadow-none"
       }`}
     >
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 md:px-8">
-        <Link href="/" className="text-lg font-semibold text-navy">
-          SchoolSure
-        </Link>
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <Logo size="lg" className="gap-3" />
         <Navigation />
         <div className="hidden items-center gap-4 lg:flex">
-          <Button variant="primary" size="sm">
-            Get a Quote
-          </Button>
+          <Link href="/quote/school">
+            <Button variant="primary" size="lg" className="px-6 py-3 rounded-xl shadow-sm hover:shadow-md">
+              Get a Quote
+            </Button>
+          </Link>
         </div>
         <MobileNav />
       </div>
