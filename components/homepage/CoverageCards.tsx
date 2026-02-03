@@ -1,127 +1,185 @@
-import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Calendar, Check, Heart, Shield } from "lucide-react";
+import {
+  ArrowRight,
+  BookOpen,
+  Check,
+  GraduationCap,
+  HeartPulse,
+  ShieldCheck,
+} from "lucide-react";
 
-const coverageCards = [
-  {
-    id: "parent",
-    icon: Shield,
-    iconBg: "bg-navy",
-    title: "If something happens to you, we step in.",
-    description:
-      "If you're diagnosed with a critical illness, have a serious accident, or die — we pay your child's school fees directly to the school. This helps your child stay in school.",
-    bullets: [
-      "Death — fees paid directly to the school to finish the year",
-      "Disablement — temporary or permanent, cover continues while you recover",
-      "Critical illness — cancer, heart attack, stroke. Helps your child stay in school.",
-    ],
-    image: "/images/schools/school-trinity-boys.png",
-    link: "/quote/school",
-    cta: "Protect Your Family",
-  },
-  {
-    id: "student",
-    icon: Heart,
-    iconBg: "bg-magenta",
-    title: "When your child can't be there, the fees are still covered.",
-    description:
-      "Kids get sick. They get injured. They experience anxiety, bullying, and things that keep them home. When that happens, you shouldn't lose the fees you've already paid.",
-    bullets: [
-      "Illness & injury — from broken bones to surgery recovery",
-      "Mental health — anxiety, bullying, trauma. Professional confirmation required.",
-      "Events & competitions — non-refundable fees returned if they can't attend",
-    ],
-    image: "/images/schools/school-abbotsleigh-science.png",
-    link: "/quote/school",
-    cta: "Add Student Cover",
-  },
-  {
-    id: "expenses",
-    icon: Calendar,
-    iconBg: "bg-grey-700",
-    title: "School expenses covered when it matters.",
-    description:
-      "Books, transport, uniforms — covered when a valid claim is approved. Built to support families through a covered event.",
-    bullets: [
-      "School books & study aids — up to $1,000",
-      "School transport — up to $1,000",
-      "Uniforms — up to $500",
-    ],
-    image: "/images/schools/school-rugby-team.png",
-    link: "/coverage/expenses",
-    cta: "Learn More",
-  },
-];
+import { PRICING_CONFIG } from "@/lib/pricing-config";
+import { formatCurrency } from "@/lib/utils";
 
 export default function CoverageCards() {
+  const productARate = PRICING_CONFIG.productA.rate * 100;
+  const productAWait = PRICING_CONFIG.productA.waitingPeriodDays;
+  const expenses = PRICING_CONFIG.productC.components;
+  const expensesMax = PRICING_CONFIG.productC.maxBenefit;
+  const placementFrom = PRICING_CONFIG.productD.levels.level1.premium;
+
   return (
-    <section id="coverage" className="bg-white pt-8 pb-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl lg:text-5xl font-black text-navy mb-4">
-            What SchoolSure covers
+    <section id="coverage" className="bg-off-white py-20">
+      <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <p className="text-[12px] font-semibold uppercase tracking-[1px] text-magenta">
+            Protection that covers the journey
+          </p>
+          <h2 className="mt-3 text-[36px] font-black text-navy">
+            What does SchoolSure cover?
           </h2>
-          <p className="text-xl text-grey-700 max-w-2xl mx-auto">
-            Protection that follows your family from enrolment to graduation.
+          <p className="mx-auto mt-2 max-w-[540px] text-[18px] text-grey-700">
+            One core product. Three ways to build on it.
           </p>
         </div>
 
-        <div className="space-y-14 lg:space-y-20">
-          {coverageCards.map((card, index) => {
-            const Icon = card.icon;
-            const isReversed = index % 2 === 1;
-            return (
-              <div
-                key={card.id}
-                className={`grid items-start gap-10 lg:grid-cols-[1.1fr_0.9fr] ${
-                  isReversed ? "lg:[&>*:first-child]:order-2" : ""
-                }`}
-              >
-                <div className="pt-1">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className={`w-12 h-12 rounded-2xl ${card.iconBg} flex items-center justify-center`}>
-                      <Icon className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-3xl font-black text-navy">{card.title}</h3>
-                  </div>
-                  <p className="text-lg text-grey-700 leading-relaxed mb-6">{card.description}</p>
-                  <ul className="space-y-3 mb-8">
-                    {card.bullets.map((item) => (
-                      <li key={item} className="flex items-start gap-3">
-                        <div className="w-6 h-6 rounded-full bg-magenta/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <Check className="w-3.5 h-3.5 text-magenta" />
-                        </div>
-                        <span className="text-base text-grey-700">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href={card.link}
-                    className="inline-flex items-center gap-2 px-6 py-3 font-semibold rounded-xl transition-all bg-magenta hover:bg-magenta-dark text-white"
-                  >
-                    {card.cta}
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
+          <div className="rounded-2xl border border-grey-200 bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.08)]" style={{ borderTopColor: "#D6336C", borderTopWidth: "2px" }}>
+            <span className="inline-flex rounded bg-magenta px-3 py-1 text-[12px] font-semibold uppercase text-white">
+              Core product
+            </span>
+            <div className="mt-4 text-magenta">
+              <ShieldCheck className="h-7 w-7" />
+            </div>
+            <h3 className="mt-3 text-[24px] font-semibold text-navy">
+              Parent Continuity Cover
+            </h3>
+            <p className="mt-3 text-[16px] leading-relaxed text-grey-700">
+              If something happens to you, your child&apos;s school fees continue
+              — paid directly to the school. Covers death, terminal illness,
+              critical illness, and disablement.
+            </p>
+            <ul className="mt-4 space-y-2 text-[16px] text-grey-700">
+              {[
+                "No medical screening required",
+                `From ${productARate}% of your annual school fee`,
+                `Cover starts in ${productAWait} days`,
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-magenta" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/quote/school"
+              className="mt-6 inline-flex items-center gap-2 text-[16px] font-semibold text-magenta transition-colors hover:text-magenta-dark hover:underline"
+            >
+              Get a Quote
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
 
-                <div className="relative">
-                  <div
-                    className="relative overflow-hidden rounded-2xl bg-white shadow-[0_24px_60px_rgba(15,23,42,0.18)] ring-1 ring-black/5 transition-transform duration-300 hover:scale-[1.01]"
-                    style={{ aspectRatio: "4/3" }}
-                  >
-                    <Image
-                      src={card.image}
-                      alt={card.title}
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-navy/20 to-transparent" />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          <div className="rounded-2xl border border-grey-200 bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+            <span className="inline-flex rounded bg-navy px-3 py-1 text-[12px] font-semibold uppercase text-white">
+              Add-on
+            </span>
+            <div className="mt-4 text-navy">
+              <HeartPulse className="h-7 w-7" />
+            </div>
+            <h3 className="mt-3 text-[24px] font-semibold text-navy">
+              Student Continuity Cover
+            </h3>
+            <p className="mt-3 text-[16px] leading-relaxed text-grey-700">
+              Covers school fees if your child suffers a severe illness, injury,
+              or mental health condition that prevents them attending for an
+              extended period.
+            </p>
+            <ul className="mt-4 space-y-2 text-[16px] text-grey-700">
+              {[
+                "Severe physical illness or injury",
+                "Mental health conditions",
+                "Sustained bullying impact",
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-magenta" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/quote/school"
+              className="mt-6 inline-flex items-center gap-2 text-[16px] font-semibold text-magenta transition-colors hover:text-magenta-dark hover:underline"
+            >
+              Add to your quote
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="rounded-2xl border border-grey-200 bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+            <span className="inline-flex rounded bg-navy px-3 py-1 text-[12px] font-semibold uppercase text-white">
+              Add-on
+            </span>
+            <div className="mt-4 text-navy">
+              <BookOpen className="h-7 w-7" />
+            </div>
+            <h3 className="mt-3 text-[24px] font-semibold text-navy">
+              School Expenses Cover
+            </h3>
+            <p className="mt-3 text-[16px] leading-relaxed text-grey-700">
+              Covers non-refundable school books, transport, and uniform costs
+              when a covered event means your child can&apos;t use them. Up to
+              {formatCurrency(expensesMax)} combined.
+            </p>
+            <ul className="mt-4 space-y-2 text-[16px] text-grey-700">
+              {[
+                `Books & study aids — up to ${formatCurrency(
+                  expenses.booksAndStudyAids
+                )}`,
+                `School transport — up to ${formatCurrency(
+                  expenses.schoolTransport
+                )}`,
+                `Uniform cover — up to ${formatCurrency(expenses.uniformCover)}`,
+              ].map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-magenta" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+            <Link
+              href="/quote/school"
+              className="mt-6 inline-flex items-center gap-2 text-[16px] font-semibold text-magenta transition-colors hover:text-magenta-dark hover:underline"
+            >
+              Add to your quote
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="rounded-2xl bg-navy p-8 text-white">
+            <span className="inline-flex rounded bg-white px-3 py-1 text-[12px] font-semibold uppercase text-navy">
+              Standalone
+            </span>
+            <div className="mt-4 text-white">
+              <GraduationCap className="h-7 w-7" />
+            </div>
+            <h3 className="mt-3 text-[24px] font-semibold text-white">
+              School Place Deposit Cover
+            </h3>
+            <p className="mt-3 text-[16px] leading-relaxed text-white/85">
+              Protect non-refundable application, enrolment, and entrance fees
+              if unforeseen events prevent your child taking up their school
+              place.
+            </p>
+            <div className="mt-4 text-[28px] font-black text-magenta">
+              from {formatCurrency(placementFrom)}
+            </div>
+            <div className="text-[14px] text-white/70">
+              One-off payment. Instant cover.
+            </div>
+            <Link href="/quote/placement" className="mt-6 inline-flex">
+              <span className="inline-flex h-11 items-center justify-center rounded-[10px] bg-magenta px-6 text-[16px] font-semibold text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-magenta-dark">
+                Get Covered →
+              </span>
+            </Link>
+          </div>
         </div>
+
+        <p className="mx-auto mt-8 max-w-[640px] text-center text-[14px] text-grey-500 leading-relaxed">
+          Parent Continuity Cover is the foundation. Add Student Cover and
+          School Expenses to build your protection. Placement Insurance is
+          available separately for families securing school places.
+        </p>
       </div>
     </section>
   );
