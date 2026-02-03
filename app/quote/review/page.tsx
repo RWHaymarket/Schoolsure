@@ -15,8 +15,6 @@ import {
 import Button from "@/components/ui/Button";
 import PaymentBadges from "@/components/shared/PaymentBadges";
 import QuoteSummary from "@/components/quote/QuoteSummary";
-import { calculatePremium } from "@/lib/pricing";
-import { PRICING } from "@/lib/constants";
 import { formatCurrency } from "@/lib/utils";
 import { useQuoteStore } from "@/store/useQuoteStore";
 
@@ -26,20 +24,18 @@ export default function QuoteReviewStep() {
     schoolName,
     annualFees,
     yearLevel,
-    tier,
     includeStudentCover,
-    includeDepositsCover,
+    includeExpensesCover,
     coverageYears,
     parentFirstName,
     parentLastName,
     parentEmail,
     parentPhone,
     children,
+    premiumBreakdown,
     quoteReference,
     generateQuoteRef,
   } = useQuoteStore();
-
-  const childCount = children.length || 1;
 
   useEffect(() => {
     if (!quoteReference) {
@@ -47,33 +43,16 @@ export default function QuoteReviewStep() {
     }
   }, [quoteReference, generateQuoteRef]);
 
-  const monthlyPricing = calculatePremium({
-    annualFee: annualFees || 35000,
-    tier,
-    years: coverageYears,
-    includeStudentCover,
-    includeDepositsCover,
-    childCount,
-    paymentFrequency: "monthly",
-  });
-
-  const annualPricing = calculatePremium({
-    annualFee: annualFees || 35000,
-    tier,
-    years: coverageYears,
-    includeStudentCover,
-    includeDepositsCover,
-    childCount,
-    paymentFrequency: "annual",
-  });
-
   const summaryPricing = {
-    weekly: Math.round(monthlyPricing.weekly),
-    monthly: Math.round(monthlyPricing.monthly),
-    annual: Math.round(monthlyPricing.annual),
-    annualWithDiscount: Math.round(annualPricing.annual),
-    totalProtection: Math.round(monthlyPricing.totalProtection),
-    savings: Math.round(monthlyPricing.annual * PRICING.ANNUAL_DISCOUNT),
+    weekly: Math.round((premiumBreakdown.annualTotal || 0) / 52),
+    monthly: Math.round(premiumBreakdown.monthlyTotal || 0),
+    annual: Math.round(premiumBreakdown.annualTotal || 0),
+    annualWithDiscount: Math.round(premiumBreakdown.annualWithDiscount || 0),
+    totalProtection: Math.round((annualFees || 0) * coverageYears * (children.length || 1)),
+    savings: Math.max(
+      0,
+      Math.round((premiumBreakdown.annualTotal || 0) - (premiumBreakdown.annualWithDiscount || 0))
+    ),
   };
 
   const primaryChild = children[0];
@@ -120,9 +99,8 @@ export default function QuoteReviewStep() {
           schoolName={schoolName}
           yearLevel={yearLevel}
           yearsRemaining={coverageYears}
-          tier={tier}
           includeStudentCover={includeStudentCover}
-          includeDepositsCover={includeDepositsCover}
+          includeExpensesCover={includeExpensesCover}
           pricing={summaryPricing}
           quoteReference={quoteReference}
         />

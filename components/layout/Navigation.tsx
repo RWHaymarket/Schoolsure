@@ -65,16 +65,16 @@ export default function Navigation() {
             </Link>
 
             <Link
-              href="/coverage/deposits"
+              href="/coverage/expenses"
               className="flex items-start gap-3 p-3 rounded-xl hover:bg-off-white transition-colors"
             >
               <div className="w-10 h-10 rounded-lg bg-grey-700 flex items-center justify-center flex-shrink-0">
                 <Calendar className="w-5 h-5 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-navy text-sm">Deposits & Booking</p>
+                <p className="font-semibold text-navy text-sm">School Expenses Cover</p>
                 <p className="text-xs text-grey-500 mt-0.5">
-                  Protect deposits before term starts
+                  Books, transport, and uniform costs
                 </p>
               </div>
             </Link>

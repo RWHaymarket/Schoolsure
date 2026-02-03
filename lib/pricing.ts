@@ -36,42 +36,29 @@ export function calculatePremiumBreakdown({
   children,
   schoolName,
 }: BreakdownParams): PremiumBreakdown {
-  const baseProductA = Math.max(
-    annualFee * PRICING.PRODUCT_A_RATE,
-    PRICING.MIN_PRODUCT_A
-  );
-  const productAWithUpgrade = fullTermUpgrade
-    ? baseProductA * (1 + PRICING.FULL_TERM_LOADING)
-    : baseProductA;
-  const productB = includeStudentCover ? annualFee * PRICING.PRODUCT_B_RATE : 0;
-  const productC = includeExpensesCover ? PRICING.PRODUCT_C_FLAT : 0;
-  const perChildTotal = productAWithUpgrade + productB + productC;
-
   const childCount = Math.max(children.length, 1);
   const childBreakdown = Array.from({ length: childCount }).map((_, index) => {
     const childName = children[index]?.firstName || `Child ${index + 1}`;
-    const discount = index === 0 ? 0 : PRICING.MULTI_CHILD_DISCOUNT;
-    const total = perChildTotal * (1 - discount);
     return {
       name: childName,
       school: schoolName,
       fee: annualFee,
-      discount,
-      total,
+      discount: index === 0 ? 0 : PRICING.MULTI_CHILD_DISCOUNT,
+      total: 0,
     };
   });
 
-  const annualTotal = childBreakdown.reduce((sum, child) => sum + child.total, 0);
-  const monthlyTotal = annualTotal / 12;
-  const annualWithDiscount = annualTotal * (1 - PRICING.ANNUAL_DISCOUNT);
-  const dailyEquivalent = annualTotal / 365;
+  const annualTotal = 0;
+  const monthlyTotal = 0;
+  const annualWithDiscount = 0;
+  const dailyEquivalent = 0;
 
   return {
-    productA: baseProductA,
-    productAWithUpgrade,
-    productB,
-    productC,
-    perChildTotal,
+    productA: 0,
+    productAWithUpgrade: 0,
+    productB: includeStudentCover ? 0 : 0,
+    productC: includeExpensesCover ? 0 : 0,
+    perChildTotal: 0,
     children: childBreakdown,
     annualTotal,
     monthlyTotal,

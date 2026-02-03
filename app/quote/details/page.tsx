@@ -245,7 +245,7 @@ export default function QuoteDetailsStep() {
                   append({ firstName: "", dateOfBirth: "", yearLevel: "" })
                 }
               >
-                + Add another child (15% off each additional child)
+                + Add another child (10% off each additional child)
               </button>
             </div>
 

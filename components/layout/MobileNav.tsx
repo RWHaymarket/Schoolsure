@@ -13,7 +13,7 @@ const navLinks = [
   {
     name: "Coverage",
     href: "/coverage",
-    desc: "Parent, Student & Deposit protection",
+    desc: "Parent, Student & School Expenses cover",
   },
   {
     name: "Pricing",

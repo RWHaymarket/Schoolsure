@@ -4,3 +4,15 @@ export interface School {
   suburb: string;
   sector: string;
 }
+
+export type ProductType =
+  | "parentContinuity"
+  | "studentContinuity"
+  | "schoolExpenses"
+  | "placementInsurance";
+
+export type CoverageOptions = {
+  fullTermUpgrade: boolean;
+  includeStudentCover: boolean;
+  includeExpensesCover: boolean;
+};

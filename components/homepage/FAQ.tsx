@@ -4,7 +4,7 @@ const faqs = [
   {
     question: "What does SchoolSure actually cover?",
     answer:
-      "SchoolSure protects your child's education if something unexpected happens to you — the person paying the school fees. Our core Parent Continuity Cover pays your child's school fees directly to the school if you die, suffer a serious injury or illness that stops you working, or are diagnosed with a critical illness like cancer, heart attack, or stroke. We also offer Student Continuity Cover (protecting fees when your child can't attend due to illness, injury, bullying, or mental health issues) and Deposits & Booking Protection (covering non-refundable school deposits and assessment fees).",
+      "SchoolSure protects your child's education if something unexpected happens to you — the person paying the school fees. Our core Parent Continuity Cover pays your child's school fees directly to the school if you die, suffer a serious injury or illness that stops you working, or are diagnosed with a critical illness like cancer, heart attack, or stroke. We also offer Student Continuity Cover (protecting fees when your child can't attend due to illness, injury, bullying, or mental health issues) and Annual School Expenses Cover (helping with books, transport, and uniforms after a covered event).",
   },
   {
     question: "How much does SchoolSure cost?",

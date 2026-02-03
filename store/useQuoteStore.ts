@@ -36,6 +36,9 @@ interface QuoteState {
 
   setSchoolDetails: (data: Partial<QuoteState>) => void;
   setCoverageDetails: (data: Partial<QuoteState>) => void;
+  setFullTermUpgrade: (value: boolean) => void;
+  setIncludeStudentCover: (value: boolean) => void;
+  setIncludeExpensesCover: (value: boolean) => void;
   setParentDetails: (data: Partial<QuoteState>) => void;
   addChild: (child: Child) => void;
   removeChild: (index: number) => void;
@@ -105,6 +108,30 @@ export const useQuoteStore = create<QuoteState>()(
       setCoverageDetails: (data) =>
         set((state) => {
           const next = { ...state, ...data };
+          return {
+            ...next,
+            premiumBreakdown: buildBreakdown(next),
+          };
+        }),
+      setFullTermUpgrade: (value) =>
+        set((state) => {
+          const next = { ...state, fullTermUpgrade: value };
+          return {
+            ...next,
+            premiumBreakdown: buildBreakdown(next),
+          };
+        }),
+      setIncludeStudentCover: (value) =>
+        set((state) => {
+          const next = { ...state, includeStudentCover: value };
+          return {
+            ...next,
+            premiumBreakdown: buildBreakdown(next),
+          };
+        }),
+      setIncludeExpensesCover: (value) =>
+        set((state) => {
+          const next = { ...state, includeExpensesCover: value };
           return {
             ...next,
             premiumBreakdown: buildBreakdown(next),

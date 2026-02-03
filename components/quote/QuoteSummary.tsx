@@ -4,9 +4,8 @@ interface QuoteSummaryProps {
   schoolName: string;
   yearLevel: string;
   yearsRemaining: number;
-  tier: "comprehensive" | "platinum";
   includeStudentCover: boolean;
-  includeDepositsCover: boolean;
+  includeExpensesCover: boolean;
   pricing: {
     weekly: number;
     monthly: number;
@@ -22,9 +21,8 @@ export default function QuoteSummary({
   schoolName,
   yearLevel,
   yearsRemaining,
-  tier,
   includeStudentCover,
-  includeDepositsCover,
+  includeExpensesCover,
   pricing,
   quoteReference,
 }: QuoteSummaryProps) {
@@ -51,7 +49,7 @@ export default function QuoteSummary({
           <div>
             <span className="text-magenta font-medium">★</span>
             <span className="ml-1 font-semibold text-navy">
-              {tier === "platinum" ? "Platinum Cover" : "Comprehensive Cover"}
+              Parent Continuity Cover
             </span>
           </div>
           <span className="font-semibold text-navy">
@@ -62,14 +60,14 @@ export default function QuoteSummary({
         {includeStudentCover ? (
           <div className="flex items-center justify-between text-grey-600">
             <span>Student Continuity Cover</span>
-            <span>+${4}/week</span>
+            <span>+1% of annual fee</span>
           </div>
         ) : null}
 
-        {includeDepositsCover ? (
+        {includeExpensesCover ? (
           <div className="flex items-center justify-between text-grey-600">
-            <span>Deposits Protection</span>
-            <span>+${2}/week</span>
+            <span>Annual School Expenses Cover</span>
+            <span>+$50/year</span>
           </div>
         ) : null}
 

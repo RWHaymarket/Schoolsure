@@ -36,19 +36,19 @@ const coverageCards = [
     cta: "Add Student Cover",
   },
   {
-    id: "deposits",
+    id: "expenses",
     icon: Calendar,
     iconBg: "bg-grey-700",
-    title: "Already paid a deposit? We've got that covered too.",
+    title: "School expenses covered when it matters.",
     description:
-      "Non-refundable deposit lost because plans changed? Illness, relocation, family breakdown — the school keeps your money. We get it back.",
+      "Books, transport, uniforms — covered when a valid claim is approved. Built to support families through a covered event.",
     bullets: [
-      "School deposits — acceptance fees, enrolment deposits, booking fees",
-      "Assessment fees — entrance exams, interviews, baseline tests",
-      "Club & tutoring fees — joining fees for extracurricular programmes",
+      "School books & study aids — up to $1,000",
+      "School transport — up to $1,000",
+      "Uniforms — up to $500",
     ],
     image: "/images/schools/school-rugby-team.png",
-    link: "/coverage/deposits",
+    link: "/coverage/expenses",
     cta: "Learn More",
   },
 ];

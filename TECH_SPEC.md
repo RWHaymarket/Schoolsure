@@ -236,10 +236,10 @@ UX Enhancements:
 - **Children:** at least one child
 
 ### Coverage Logic
-- Tier pricing computed via `calculatePremium`
+- Pricing computed via `calculatePremiumBreakdown` (placeholder values until pricing rebuild)
 - Add‑ons:
-  - Student Continuity Cover (+$4/week)
-  - Deposits & Booking Protection (+$2/week)
+  - Student Continuity Cover (1% of annual fee)
+  - Annual School Expenses Cover (~$50/child/year)
 - Premiums shown weekly/monthly/annual
 
 ### Review & Purchase
