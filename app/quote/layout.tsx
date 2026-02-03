@@ -18,6 +18,9 @@ export default function QuoteLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  if (pathname.startsWith("/quote/placement")) {
+    return <div className="bg-white">{children}</div>;
+  }
   const currentStep = stepMap[pathname] ?? 1;
 
   return (

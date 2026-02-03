@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import Button from "@/components/ui/Button";
 import Navigation from "@/components/layout/Navigation";
@@ -10,6 +11,8 @@ import { Logo } from "@/components/ui/Logo";
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
+  const isPlacementPage = pathname === "/quote/placement";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -26,15 +29,32 @@ export default function Header() {
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Logo size="lg" className="gap-3" />
-        <Navigation />
-        <div className="hidden items-center gap-4 lg:flex">
-          <Link href="/quote/school">
-            <Button variant="primary" size="lg" className="px-6 py-3 rounded-xl shadow-sm hover:shadow-md">
-              Get a Quote
-            </Button>
-          </Link>
-        </div>
-        <MobileNav />
+        {isPlacementPage ? (
+          <div className="flex flex-1 items-center justify-end gap-4 text-sm font-semibold text-navy">
+            <Link href="/quote/school">
+              School Fee Protection
+            </Link>
+            <a href="tel:1300123456" className="text-grey-700">
+              1300 123 456
+            </a>
+          </div>
+        ) : (
+          <>
+            <Navigation />
+            <div className="hidden items-center gap-4 lg:flex">
+              <Link href="/quote/school">
+                <Button
+                  variant="primary"
+                  size="lg"
+                  className="px-6 py-3 rounded-xl shadow-sm hover:shadow-md"
+                >
+                  Get a Quote
+                </Button>
+              </Link>
+            </div>
+            <MobileNav />
+          </>
+        )}
       </div>
     </header>
   );
