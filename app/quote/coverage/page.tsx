@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -9,21 +10,45 @@ import {
   CheckCircle2,
   GraduationCap,
   Wallet,
-  BadgeCheck,
+  ArrowUpRight,
 } from "lucide-react";
 
-import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
-import InfoBox from "@/components/shared/InfoBox";
+import { PRICING_CONFIG } from "@/lib/pricing-config";
 import { formatCurrency } from "@/lib/utils";
 import { useQuoteStore } from "@/store/useQuoteStore";
 
+const Toggle = ({
+  checked,
+  onChange,
+  ariaLabel,
+}: {
+  checked: boolean;
+  onChange: (value: boolean) => void;
+  ariaLabel: string;
+}) => (
+  <button
+    type="button"
+    aria-label={ariaLabel}
+    aria-pressed={checked}
+    onClick={() => onChange(!checked)}
+    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-all duration-200 ease-out ${
+      checked ? "bg-[#D6336C]" : "bg-[#E2E8F0]"
+    } focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2D3E50] focus-visible:outline-offset-2`}
+  >
+    <span
+      className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition-all duration-200 ${
+        checked ? "translate-x-5" : "translate-x-1"
+      }`}
+    />
+  </button>
+);
+
 export default function QuoteCoverageStep() {
   const router = useRouter();
+  const [showMobileBreakdown, setShowMobileBreakdown] = useState(false);
   const {
     schoolName,
     annualFees,
-    yearLevel,
     fullTermUpgrade,
     includeStudentCover,
     includeExpensesCover,
@@ -31,271 +56,377 @@ export default function QuoteCoverageStep() {
     setCoverageDetails,
   } = useQuoteStore();
 
-  const feeValue = annualFees || 0;
+  const hasPricing = annualFees > 0;
+  const annualTotal = premiumBreakdown.annualTotal || 0;
+  const monthlyTotal = premiumBreakdown.monthlyTotal || 0;
+  const dailyEquivalent = premiumBreakdown.dailyEquivalent || 0;
+  const fullTermUpgradeAmount = premiumBreakdown.children[0]?.fullTermUpgradeAmount || 0;
+  const multiChildDiscountApplied =
+    premiumBreakdown.children.some((child) => child.multiChildDiscount > 0);
+
+  const priceDisplay = useMemo(() => {
+    if (!hasPricing) {
+      return {
+        annual: "Complete Step 1 to see pricing",
+        monthly: "",
+        daily: "",
+      };
+    }
+    return {
+      annual: `${formatCurrency(annualTotal)}/year`,
+      monthly: `${formatCurrency(monthlyTotal)}/month`,
+      daily: `From ${formatCurrency(dailyEquivalent)} per day`,
+    };
+  }, [annualTotal, dailyEquivalent, hasPricing, monthlyTotal]);
 
   return (
     <section className="bg-white">
-      <div className="mx-auto max-w-5xl px-4 py-12">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-grey-500">
-              Step 2 of 4
-            </p>
-            <h1 className="text-h1 text-navy tracking-tight">Your cover</h1>
-            <p className="mt-3 text-lg text-grey-700">
-              Choose the protection that fits your family.
-            </p>
-          </div>
-          <div className="text-sm text-grey-500">
-            Prices update instantly based on your selections
-          </div>
+      <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-12">
+        <div className="mb-8">
+          <h2 className="text-[36px] font-black text-[#2D3E50] leading-[1.2]">
+            Your cover
+          </h2>
+          <p className="mt-2 text-[16px] text-[#4A5568] leading-[1.6]">
+            Your core protection is included. Add what matters to your family.
+          </p>
         </div>
 
-        <div className="mt-8">
-          <Card className="border border-grey-100 shadow-[0_16px_40px_rgba(15,23,42,0.12)]">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div>
-                <div className="text-sm font-semibold uppercase text-grey-500">
-                  Your school
-                </div>
-                <div className="mt-2 text-body font-semibold text-navy">
-                  {schoolName || "School name"}
-                </div>
-                <div className="text-sm text-grey-500">
-                  Annual fees: {formatCurrency(feeValue)} ·{" "}
-                  {yearLevel || "Year level"}
-                </div>
-              </div>
-              <div className="rounded-full bg-magenta/10 px-3 py-1 text-xs font-semibold text-magenta">
-                Personalised estimate
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        <div className="mt-10 grid gap-8 lg:grid-cols-[2fr_1fr]">
-          <div className="space-y-8">
-            <Card className="border border-grey-200 shadow-[0_12px_28px_rgba(15,23,42,0.1)]">
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <div className="text-xs font-semibold uppercase text-grey-500">
-                    Core cover
-                  </div>
-                  <h3 className="text-2xl font-bold text-navy mt-1">
-                    Parent Continuity Cover
-                  </h3>
-                  <p className="text-sm text-grey-600 mt-2">
-                    Protects your child&apos;s education if something happens to you.
-                  </p>
-                </div>
+        <div className="grid gap-6 lg:grid-cols-12">
+          <div className="space-y-10 lg:col-span-8">
+            <div className="rounded-2xl border border-[#E2E8F0] bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+              <div className="flex items-center justify-between">
+                <span className="rounded-md bg-[#D6336C] px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.5px] text-white">
+                  Core
+                </span>
                 <div className="text-right">
-                  <p className="text-xs text-grey-500">From</p>
-                  <p className="text-2xl font-bold text-navy">
-                    {formatCurrency(premiumBreakdown.productA)}
-                  </p>
-                  <p className="text-xs text-grey-500">per year</p>
+                  <div className="text-[28px] font-black text-[#2D3E50]">
+                    {hasPricing ? formatCurrency(annualTotal) : "—"}
+                    {hasPricing ? "/year" : ""}
+                  </div>
+                  <div className="text-[14px] text-[#A0AEC0]">
+                    {hasPricing ? `from ${formatCurrency(dailyEquivalent)}/day` : "Complete Step 1 to see pricing"}
+                  </div>
+                  {hasPricing && annualTotal === PRICING_CONFIG.productA.minimumPremium && (
+                    <div className="text-[14px] text-[#A0AEC0]">(minimum premium)</div>
+                  )}
                 </div>
               </div>
 
-              <ul className="mt-6 grid gap-2 text-sm text-grey-600">
+              <div className="mt-5">
+                <h4 className="text-[24px] font-semibold text-[#2D3E50] leading-[1.3]">
+                  Parent Continuity Cover
+                </h4>
+                <p className="mt-2 text-[16px] text-[#4A5568] leading-[1.6]">
+                  If the fee payer dies, becomes seriously ill, or is disabled — school
+                  fees continue. Paid directly to the school.
+                </p>
+              </div>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-2">
                 {[
                   "Death of fee payer",
                   "Terminal illness",
-                  "Temporary disablement (30-day wait)",
+                  "Critical illness",
+                  "Temporary disablement",
                   "Permanent disablement",
-                  "Critical illness (defined conditions)",
+                  "No medical screening",
                 ].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-magenta" />
+                  <div key={item} className="flex items-center gap-2 text-[16px] text-[#4A5568]">
+                    <CheckCircle2 className="h-5 w-5 text-[#D6336C]" />
                     {item}
-                  </li>
+                  </div>
                 ))}
-              </ul>
+              </div>
 
-              <div className="mt-6 flex items-start justify-between gap-4 rounded-xl border border-grey-200 bg-grey-50 p-4">
-                <div>
-                  <p className="text-sm font-semibold text-navy">
-                    Full Term Upgrade
-                  </p>
-                  <p className="text-xs text-grey-500">
-                    Extend death & terminal illness cover to the full schooling
-                    term (+15%).
-                  </p>
-                </div>
-                <label className="inline-flex items-center gap-2 text-sm font-semibold text-navy">
-                  <input
-                    type="checkbox"
+              <div className="mt-6 rounded-xl bg-[#F8F9FA] p-5">
+                <div className="flex items-start gap-4">
+                  <Toggle
                     checked={fullTermUpgrade}
-                    onChange={(event) =>
-                      setCoverageDetails({ fullTermUpgrade: event.target.checked })
-                    }
-                    className="h-4 w-4 rounded border-grey-300 text-magenta focus:ring-magenta"
+                    onChange={(value) => setCoverageDetails({ fullTermUpgrade: value })}
+                    ariaLabel="Toggle full term upgrade"
                   />
-                  Add
-                </label>
+                  <div>
+                    <div className="text-[16px] font-semibold text-[#2D3E50]">
+                      Extend cover for full schooling term
+                    </div>
+                    <div className="text-[14px] font-semibold text-[#D6336C]">
+                      {hasPricing
+                        ? `+${formatCurrency(fullTermUpgradeAmount)}/year`
+                        : "+$XXX/year"}
+                    </div>
+                    <div className="text-[14px] text-[#A0AEC0]">
+                      Death and terminal illness benefits continue until your child completes their schooling.
+                    </div>
+                  </div>
+                </div>
               </div>
-
-              <div className="mt-4 text-xs text-grey-500">
-                No medical screening · Direct payment to school · Moratorium
-                approach
-              </div>
-            </Card>
+            </div>
 
             <div>
-              <div className="text-h4 font-headline text-navy">
-                Optional add-ons
-              </div>
-              <div className="mt-4 grid gap-4">
-                <div className="rounded-2xl border-2 border-grey-200 bg-white p-5 shadow-[0_8px_20px_rgba(15,23,42,0.06)]">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-magenta/10">
-                        <GraduationCap className="h-5 w-5 text-magenta" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-navy">
-                          Student Continuity Cover
-                        </h4>
-                        <p className="mt-1 text-sm text-grey-600">
-                          Covers school fees if your child suffers a severe illness,
-                          injury, or mental health condition preventing attendance.
-                        </p>
-                      </div>
-                    </div>
-                    <label className="inline-flex items-center gap-2 text-sm font-semibold text-navy">
-                      <input
-                        type="checkbox"
-                        checked={includeStudentCover}
-                        onChange={(event) =>
-                          setCoverageDetails({
-                            includeStudentCover: event.target.checked,
-                          })
-                        }
-                        className="h-4 w-4 rounded border-grey-300 text-magenta focus:ring-magenta"
-                      />
-                      {formatCurrency(premiumBreakdown.productB)}/yr
-                    </label>
+              <h4 className="text-[24px] font-semibold text-[#2D3E50] mb-5">
+                Enhance your cover
+              </h4>
+              <div className="grid gap-6 lg:grid-cols-2">
+                <div
+                  className={`rounded-2xl border ${
+                    includeStudentCover
+                      ? "border-[#D6336C] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                      : "border-[#E2E8F0] opacity-75"
+                  } bg-white p-6 transition-all duration-200`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="rounded-md bg-[#2D3E50] px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.5px] text-white">
+                      Add-on
+                    </span>
+                    <Toggle
+                      checked={includeStudentCover}
+                      onChange={(value) => setCoverageDetails({ includeStudentCover: value })}
+                      ariaLabel="Toggle student continuity cover"
+                    />
                   </div>
+                  <div className="mt-4">
+                    <div className="flex items-center gap-2">
+                      <GraduationCap className="h-5 w-5 text-[#D6336C]" />
+                      <h4 className="text-[20px] font-semibold text-[#2D3E50]">
+                        Student Continuity Cover
+                      </h4>
+                    </div>
+                    <div className="mt-1 text-[16px] font-semibold text-[#D6336C]">
+                      {hasPricing
+                        ? `+${formatCurrency(premiumBreakdown.children[0]?.productB || 0)}/year`
+                        : "+1% of annual fee"}
+                    </div>
+                    <p className="mt-2 text-[14px] text-[#4A5568] leading-[1.5]">
+                      Covers fees if your child suffers a severe illness, injury, or mental health condition preventing attendance for 25%+ of the school year.
+                    </p>
+                  </div>
+                  {includeStudentCover && (
+                    <div className="mt-3 space-y-2 text-[14px] text-[#4A5568]">
+                      {[
+                        "Severe physical illness or injury",
+                        "Severe mental health condition",
+                        "Sustained bullying impact",
+                        "Trauma response",
+                      ].map((item) => (
+                        <div key={item} className="flex items-center gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-[#D6336C]" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                <div className="rounded-2xl border-2 border-grey-200 bg-white p-5 shadow-[0_8px_20px_rgba(15,23,42,0.06)]">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-navy/10">
-                        <Wallet className="h-5 w-5 text-navy" />
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-navy">
-                          Annual School Expenses Cover
-                        </h4>
-                        <p className="mt-1 text-sm text-grey-600">
-                          Covers non-refundable books, transport, and uniform
-                          costs when a covered event occurs.
-                        </p>
-                      </div>
-                    </div>
-                    <label className="inline-flex items-center gap-2 text-sm font-semibold text-navy">
-                      <input
-                        type="checkbox"
-                        checked={includeExpensesCover}
-                        onChange={(event) =>
-                          setCoverageDetails({
-                            includeExpensesCover: event.target.checked,
-                          })
-                        }
-                        className="h-4 w-4 rounded border-grey-300 text-magenta focus:ring-magenta"
-                      />
-                      {formatCurrency(premiumBreakdown.productC)}/yr
-                    </label>
+                <div
+                  className={`rounded-2xl border ${
+                    includeExpensesCover
+                      ? "border-[#D6336C] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                      : "border-[#E2E8F0] opacity-75"
+                  } bg-white p-6 transition-all duration-200`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="rounded-md bg-[#2D3E50] px-3 py-1 text-[12px] font-semibold uppercase tracking-[0.5px] text-white">
+                      Add-on
+                    </span>
+                    <Toggle
+                      checked={includeExpensesCover}
+                      onChange={(value) => setCoverageDetails({ includeExpensesCover: value })}
+                      ariaLabel="Toggle school expenses cover"
+                    />
                   </div>
+                  <div className="mt-4">
+                    <div className="flex items-center gap-2">
+                      <Wallet className="h-5 w-5 text-[#D6336C]" />
+                      <h4 className="text-[20px] font-semibold text-[#2D3E50]">
+                        School Expenses Cover
+                      </h4>
+                    </div>
+                    <div className="mt-1 text-[16px] font-semibold text-[#D6336C]">
+                      {hasPricing
+                        ? `+${formatCurrency(premiumBreakdown.children[0]?.productC || 0)}/year`
+                        : "+$50/year"}
+                    </div>
+                    <p className="mt-2 text-[14px] text-[#4A5568] leading-[1.5]">
+                      Covers non-refundable books, transport, and uniform costs when a covered event occurs.
+                    </p>
+                  </div>
+                  {includeExpensesCover && (
+                    <div className="mt-3 space-y-2 text-[14px] text-[#4A5568]">
+                      {[
+                        "Books & study aids — up to $1,000",
+                        "School transport — up to $1,000",
+                        "Uniform cover — up to $500",
+                        "Combined maximum: $2,500",
+                      ].map((item) => (
+                        <div key={item} className="flex items-center gap-2">
+                          <CheckCircle2 className="h-4 w-4 text-[#D6336C]" />
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            <div className="rounded-2xl border border-magenta/30 bg-magenta/5 p-5">
-              <div className="flex items-start gap-3">
-                <BadgeCheck className="h-5 w-5 text-magenta mt-0.5" />
-                <div>
-                  <p className="font-semibold text-navy">
-                    Securing a school place?
-                  </p>
-                  <p className="text-sm text-grey-600">
-                    Protect your deposit from $25 with Placement Insurance.
-                  </p>
-                  <button
-                    type="button"
-                    className="mt-3 text-sm font-semibold text-magenta"
-                    onClick={() => router.push("/quote/placement")}
-                  >
-                    Explore Placement Insurance →
-                  </button>
+            <button
+              type="button"
+              onClick={() => router.push("/quote/placement")}
+              className="w-full rounded-xl border border-dashed border-[#E2E8F0] bg-[#F8F9FA] px-5 py-4 text-left transition-colors duration-150 hover:bg-[#F7FAFC] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2D3E50] focus-visible:outline-offset-2"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <GraduationCap className="h-6 w-6 text-[#2D3E50]" />
+                  <div>
+                    <div className="text-[16px] font-semibold text-[#2D3E50]">
+                      Securing a school place?
+                    </div>
+                    <div className="text-[14px] text-[#4A5568]">
+                      Protect your deposit from $25
+                    </div>
+                  </div>
                 </div>
+                <ArrowUpRight className="h-5 w-5 text-[#D6336C]" />
               </div>
-            </div>
+            </button>
           </div>
 
-          <div className="lg:sticky lg:top-24 h-fit">
-            <Card className="border border-grey-200 bg-grey-50 shadow-[0_12px_28px_rgba(15,23,42,0.12)]">
-              <div className="text-sm font-semibold text-navy mb-3">
-                Premium summary
+          <div className="hidden lg:block lg:col-span-4">
+            <div className="sticky top-24 rounded-2xl border border-[#E2E8F0] bg-white p-7 shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+              <div className="text-[14px] uppercase tracking-[0.5px] text-[#A0AEC0]">
+                Your premium
               </div>
-              <div className="space-y-2 text-sm text-grey-600">
-                <div className="flex items-center justify-between">
-                  <span>Annual total</span>
-                  <span className="font-semibold text-navy">
-                    {formatCurrency(premiumBreakdown.annualTotal)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Monthly equivalent</span>
-                  <span className="font-semibold text-navy">
-                    {formatCurrency(premiumBreakdown.monthlyTotal)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>Per day</span>
-                  <span className="font-semibold text-navy">
-                    From {formatCurrency(premiumBreakdown.dailyEquivalent)}
-                  </span>
-                </div>
+              <div className="mt-2 text-[36px] font-black text-[#2D3E50]">
+                {priceDisplay.annual}
               </div>
-              <div className="mt-4 rounded-xl bg-white p-4 text-xs text-grey-500">
-                Underwritten by Lloyd&apos;s of London · No medical screening
+              {priceDisplay.monthly && (
+                <div className="text-[16px] text-[#4A5568]">{priceDisplay.monthly}</div>
+              )}
+              {priceDisplay.daily && (
+                <div className="text-[14px] text-[#A0AEC0]">{priceDisplay.daily}</div>
+              )}
+              {multiChildDiscountApplied && (
+                <div className="mt-2 text-[14px] font-semibold text-[#D6336C]">
+                  Includes 10% multi-child discount
+                </div>
+              )}
+
+              <div className="my-5 h-px bg-[#E2E8F0]" />
+              <div className="space-y-2 text-[14px] text-[#4A5568]">
+                <div className="flex items-center justify-between">
+                  <span>Parent Continuity Cover</span>
+                  <span>{hasPricing ? formatCurrency(premiumBreakdown.children[0]?.productA || 0) : "—"}</span>
+                </div>
+                {fullTermUpgrade && (
+                  <div className="flex items-center justify-between">
+                    <span>Full Term Upgrade</span>
+                    <span>+{formatCurrency(fullTermUpgradeAmount)}</span>
+                  </div>
+                )}
+                {includeStudentCover && (
+                  <div className="flex items-center justify-between">
+                    <span>Student Continuity Cover</span>
+                    <span>+{formatCurrency(premiumBreakdown.children[0]?.productB || 0)}</span>
+                  </div>
+                )}
+                {includeExpensesCover && (
+                  <div className="flex items-center justify-between">
+                    <span>School Expenses Cover</span>
+                    <span>+{formatCurrency(premiumBreakdown.children[0]?.productC || 0)}</span>
+                  </div>
+                )}
               </div>
-              <p className="mt-3 text-[11px] text-grey-400">
-                Cover is subject to policy terms, conditions, and exclusions.
-                Please read the PDS before purchasing.
+
+              <button
+                type="button"
+                onClick={() => router.push("/quote/details")}
+                disabled={!hasPricing}
+                className={`mt-6 w-full rounded-[10px] px-6 py-3 text-[16px] font-semibold text-white transition-all duration-200 ease-out ${
+                  hasPricing
+                    ? "bg-[#D6336C] hover:bg-[#C2255C] hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(0,0,0,0.15)]"
+                    : "bg-[#E2E8F0] text-[#A0AEC0] cursor-not-allowed"
+                } focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2D3E50] focus-visible:outline-offset-2`}
+              >
+                Continue
+              </button>
+
+              <div className="mt-4 text-[13px] text-[#A0AEC0] text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <ShieldCheck className="h-4 w-4 text-[#2D3E50]" />
+                  Underwritten at Lloyd&apos;s of London
+                </div>
+                <div className="mt-1">No medical screening required</div>
+              </div>
+
+              <p className="mt-4 text-[12px] text-[#A0AEC0] leading-[1.4]">
+                Cover is subject to the terms, conditions and exclusions of the policy. Please read the Product Disclosure Statement before making a decision.
               </p>
-            </Card>
+            </div>
           </div>
         </div>
 
-        <div className="mt-8">
-          <InfoBox variant="tip">
-            Claims are paid net of any school hardship relief or bursary. Parents
-            must engage with the school process first.
-          </InfoBox>
-        </div>
-
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4">
-          <Button variant="secondary" onClick={() => router.push("/quote/school")}>
-            <ChevronLeft className="h-4 w-4" />
-            Back
-          </Button>
-          <div className="flex items-center gap-4 text-xs text-grey-500">
-            <span className="inline-flex items-center gap-2">
-              <ShieldCheck className="h-4 w-4 text-magenta" />
-              Underwritten by Lloyd&apos;s
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <Lock className="h-4 w-4 text-magenta" />
-              Secure quote
-            </span>
+        <div className="lg:hidden">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.1)] px-6 py-4">
+            <button
+              type="button"
+              onClick={() => setShowMobileBreakdown((prev) => !prev)}
+              className="flex w-full items-center justify-between"
+            >
+              <div>
+                <div className="text-[20px] font-black text-[#2D3E50]">
+                  {hasPricing ? formatCurrency(annualTotal) : "—"}/yr
+                </div>
+                <div className="text-[14px] text-[#A0AEC0]">
+                  {hasPricing ? formatCurrency(monthlyTotal) : ""}/mo
+                </div>
+              </div>
+              <span className="text-[14px] font-semibold text-[#D6336C]">
+                {showMobileBreakdown ? "Hide details" : "View details"}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => router.push("/quote/details")}
+              disabled={!hasPricing}
+              className={`mt-3 w-full rounded-[10px] px-6 py-3 text-[16px] font-semibold text-white transition-all duration-200 ease-out ${
+                hasPricing ? "bg-[#D6336C] hover:bg-[#C2255C]" : "bg-[#E2E8F0] text-[#A0AEC0] cursor-not-allowed"
+              } focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2D3E50] focus-visible:outline-offset-2`}
+            >
+              Continue
+            </button>
           </div>
-          <Button onClick={() => router.push("/quote/details")}>
-            Continue to Details
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+
+          {showMobileBreakdown && (
+            <div className="fixed bottom-24 left-0 right-0 z-50 mx-4 rounded-2xl border border-[#E2E8F0] bg-white p-5 shadow-[0_2px_8px_rgba(0,0,0,0.1)]">
+              <div className="text-[14px] uppercase tracking-[0.5px] text-[#A0AEC0]">
+                Premium breakdown
+              </div>
+              <div className="mt-3 space-y-2 text-[14px] text-[#4A5568]">
+                <div className="flex items-center justify-between">
+                  <span>Parent Continuity Cover</span>
+                  <span>{hasPricing ? formatCurrency(premiumBreakdown.children[0]?.productA || 0) : "—"}</span>
+                </div>
+                {fullTermUpgrade && (
+                  <div className="flex items-center justify-between">
+                    <span>Full Term Upgrade</span>
+                    <span>+{formatCurrency(fullTermUpgradeAmount)}</span>
+                  </div>
+                )}
+                {includeStudentCover && (
+                  <div className="flex items-center justify-between">
+                    <span>Student Continuity Cover</span>
+                    <span>+{formatCurrency(premiumBreakdown.children[0]?.productB || 0)}</span>
+                  </div>
+                )}
+                {includeExpensesCover && (
+                  <div className="flex items-center justify-between">
+                    <span>School Expenses Cover</span>
+                    <span>+{formatCurrency(premiumBreakdown.children[0]?.productC || 0)}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
