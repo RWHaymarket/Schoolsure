@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-import { calculatePremiumBreakdown, type PremiumBreakdown } from "@/lib/pricing";
+import { PRICING_CONFIG } from "@/lib/pricing-config";
+import type { PremiumBreakdown } from "@/types/premium";
 
 interface Child {
   firstName: string;
@@ -46,6 +47,89 @@ interface QuoteState {
   generateQuoteRef: () => void;
 }
 
+const round2 = (value: number) => Math.round(value * 100) / 100;
+
+export const calculatePremium = (state: {
+  annualFees: number;
+  includeStudentCover: boolean;
+  includeExpensesCover: boolean;
+  fullTermUpgrade: boolean;
+  children: Child[];
+  schoolName: string;
+}): PremiumBreakdown => {
+  const annualFee = state.annualFees || 0;
+  const childCount = Math.max(state.children.length, 1);
+
+  const children = Array.from({ length: childCount }).map((_, index) => {
+    let productA = annualFee * PRICING_CONFIG.productA.rate;
+    if (productA < PRICING_CONFIG.productA.minimumPremium) {
+      productA = PRICING_CONFIG.productA.minimumPremium;
+    }
+
+    let fullTermUpgradeAmount = 0;
+    if (state.fullTermUpgrade) {
+      fullTermUpgradeAmount = productA * PRICING_CONFIG.productA.fullTermLoading;
+      productA = productA + fullTermUpgradeAmount;
+    }
+
+    let productB = 0;
+    if (state.includeStudentCover) {
+      productB = annualFee * PRICING_CONFIG.productB.rate;
+    }
+
+    let productC = 0;
+    if (state.includeExpensesCover) {
+      productC = PRICING_CONFIG.productC.flatRate;
+    }
+
+    const subtotalBeforeDiscount = productA + productB + productC;
+    let multiChildDiscount = 0;
+    if (index > 0) {
+      multiChildDiscount =
+        subtotalBeforeDiscount * PRICING_CONFIG.discounts.multiChild;
+    }
+
+    const childTotal = subtotalBeforeDiscount - multiChildDiscount;
+
+    return {
+      childIndex: index,
+      childName: state.children[index]?.firstName || `Child ${index + 1}`,
+      schoolName: state.schoolName,
+      annualFee,
+      productA: round2(productA),
+      fullTermUpgradeAmount: round2(fullTermUpgradeAmount),
+      productB: round2(productB),
+      productC: round2(productC),
+      subtotalBeforeDiscount: round2(subtotalBeforeDiscount),
+      multiChildDiscount: round2(multiChildDiscount),
+      childTotal: round2(childTotal),
+    };
+  });
+
+  const annualTotal = round2(
+    children.reduce((sum, child) => sum + child.childTotal, 0)
+  );
+  const annualWithDiscount = round2(
+    annualTotal * (1 - PRICING_CONFIG.discounts.annualPayment)
+  );
+  const monthlyTotal = round2(annualTotal / 12);
+  const dailyEquivalent = round2(annualTotal / 365);
+
+  return {
+    children,
+    annualTotal,
+    annualWithDiscount,
+    monthlyTotal,
+    dailyEquivalent,
+    productsIncluded: {
+      productA: true,
+      fullTermUpgrade: state.fullTermUpgrade,
+      productB: state.includeStudentCover,
+      productC: state.includeExpensesCover,
+    },
+  };
+};
+
 const buildBreakdown = (state: {
   annualFees: number;
   includeStudentCover: boolean;
@@ -53,15 +137,7 @@ const buildBreakdown = (state: {
   fullTermUpgrade: boolean;
   children: Child[];
   schoolName: string;
-}) =>
-  calculatePremiumBreakdown({
-    annualFee: state.annualFees || 0,
-    includeStudentCover: state.includeStudentCover,
-    includeExpensesCover: state.includeExpensesCover,
-    fullTermUpgrade: state.fullTermUpgrade,
-    children: state.children,
-    schoolName: state.schoolName,
-  });
+}) => calculatePremium(state);
 
 const initialState = {
   schoolId: "",
@@ -83,8 +159,8 @@ const initialState = {
   parentDob: "",
   children: [],
   quoteReference: "",
-  premiumBreakdown: calculatePremiumBreakdown({
-    annualFee: 0,
+  premiumBreakdown: calculatePremium({
+    annualFees: 0,
     includeStudentCover: false,
     includeExpensesCover: false,
     fullTermUpgrade: false,

@@ -16,3 +16,5 @@ export type CoverageOptions = {
   includeStudentCover: boolean;
   includeExpensesCover: boolean;
 };
+
+export type { ChildPremiumBreakdown, PremiumBreakdown } from "./premium";
