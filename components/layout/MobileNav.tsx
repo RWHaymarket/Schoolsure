@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Menu, Shield, X } from "lucide-react";
+import { ArrowRight, ChevronDown, Menu, Shield, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const navLinks = [
@@ -37,8 +37,28 @@ const navLinks = [
   },
 ];
 
+const productLinks = [
+  {
+    name: "Parent Continuity Cover",
+    href: "/products/parent-continuity-cover",
+  },
+  {
+    name: "Student Continuity Cover",
+    href: "/products/student-continuity-cover",
+  },
+  {
+    name: "School Expenses Cover",
+    href: "/products/school-expenses-cover",
+  },
+  {
+    name: "Placement Insurance",
+    href: "/products/placement-insurance",
+  },
+];
+
 export default function MobileNav() {
   const [open, setOpen] = useState(false);
+  const [productsOpen, setProductsOpen] = useState(false);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -73,6 +93,37 @@ export default function MobileNav() {
 
             <div className="flex-1 overflow-y-auto px-6 py-8">
               <nav className="space-y-1">
+                <button
+                  type="button"
+                  onClick={() => setProductsOpen((prev) => !prev)}
+                  className="flex w-full items-center justify-between py-4 border-b border-white/10"
+                >
+                  <div>
+                    <p className="text-xl font-semibold text-white">Products</p>
+                    <p className="text-sm text-white/50 mt-0.5">
+                      Explore each cover option
+                    </p>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-white/50 transition-transform ${
+                      productsOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {productsOpen ? (
+                  <div className="pb-4">
+                    {productLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        onClick={() => setOpen(false)}
+                        className="block px-2 py-3 text-sm font-semibold text-white/80 hover:text-magenta"
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
                 {navLinks.map((link) => (
                   <Link
                     key={link.name}

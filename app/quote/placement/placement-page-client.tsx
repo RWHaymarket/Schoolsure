@@ -3,13 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import {
-  Briefcase,
   Check,
   CheckCircle2,
   Clock,
   CreditCard,
-  Heart,
-  Home,
   Lock,
   Mail,
   Shield,
@@ -21,6 +18,7 @@ import {
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
+import ScenariosSection from "@/components/products/ScenariosSection";
 import { PRICING_CONFIG } from "@/lib/pricing-config";
 import { formatCurrency } from "@/lib/utils";
 
@@ -38,6 +36,35 @@ const formatLimit = (limit: number) => `Up to ${formatCurrency(limit)}`;
 const emailRegex = /^\S+@\S+\.\S+$/;
 
 export default function PlacementPageClient() {
+  const scenarios = [
+    {
+      icon: "briefcase",
+      title: "Unexpected relocation",
+      story:
+        "James secured a place at his top-choice school with a $2,500 deposit. Three months later, his mum was transferred to Perth. Without cover, the deposit was gone.",
+      outcome:
+        "Placement Insurance reimbursed the non-refundable deposit, allowing the family to re-apply in their new city.",
+      tag: "Covered under Placement Insurance — Forced Relocation",
+    },
+    {
+      icon: "heart",
+      title: "Family illness",
+      story:
+        "Sophia's parents paid a $1,200 enrolment fee. Her father was then diagnosed with a critical illness, and the family needed to reassess their finances and schooling plans.",
+      outcome:
+        "Placement Insurance reimbursed the enrolment fee after medical evidence confirmed the event.",
+      tag: "Covered under Placement Insurance — Critical Illness",
+    },
+    {
+      icon: "home",
+      title: "Bereavement",
+      story:
+        "After the sudden loss of a sibling, Liam's family decided he needed to be closer to home rather than attend the boarding school they'd enrolled him in.",
+      outcome:
+        "Placement Insurance reimbursed the non-refundable fee so the family could enrol locally.",
+      tag: "Covered under Placement Insurance — Bereavement",
+    },
+  ];
   const [selectedLevel, setSelectedLevel] = useState<LevelKey>("level2");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -420,49 +447,11 @@ export default function PlacementPageClient() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[960px] px-6 py-12 md:px-12">
-        <div className="text-[20px] font-semibold text-navy">
-          When families are glad they had it
-        </div>
-        <div className="mt-5 grid gap-5 md:grid-cols-3">
-          {[
-            {
-              icon: Briefcase,
-              title: "Unexpected relocation",
-              body:
-                "James secured a place at his top-choice school with a $2,500 deposit. Three months later, his mum was transferred to Perth. Without cover, the deposit was gone.",
-              note: "Covered under Level 2 or 3",
-            },
-            {
-              icon: Heart,
-              title: "Family illness",
-              body:
-                "Sophia's parents paid a $1,200 enrolment fee. Her father was then diagnosed with a critical illness, and the family needed to reassess their finances and schooling plans.",
-              note: "Covered under Level 2 or 3",
-            },
-            {
-              icon: Home,
-              title: "Bereavement",
-              body:
-                "After the sudden loss of a sibling, Liam's family decided he needed to be closer to home rather than attend the boarding school they'd enrolled him in.",
-              note: "Covered under all levels",
-            },
-          ].map((scenario) => (
-            <Card
-              key={scenario.title}
-              className="rounded-xl border border-grey-200 bg-off-white p-5 shadow-none"
-            >
-              <scenario.icon className="h-5 w-5 text-navy" />
-              <div className="mt-3 text-[16px] font-semibold text-navy">
-                {scenario.title}
-              </div>
-              <p className="mt-2 text-[14px] text-grey-700">{scenario.body}</p>
-              <p className="mt-3 text-[14px] font-semibold text-magenta">
-                {scenario.note}
-              </p>
-            </Card>
-          ))}
-        </div>
+      <div className="py-12">
+        <ScenariosSection
+          heading="When families are glad they had it"
+          scenarios={scenarios}
+        />
       </div>
 
       <div className="mx-auto max-w-[960px] px-6 py-12 md:px-12">

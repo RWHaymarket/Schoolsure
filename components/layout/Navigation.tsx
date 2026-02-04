@@ -4,6 +4,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Calendar, ChevronDown, Heart, Shield } from "lucide-react";
 
+const productLinks = [
+  {
+    label: "Parent Continuity Cover",
+    href: "/products/parent-continuity-cover",
+  },
+  {
+    label: "Student Continuity Cover",
+    href: "/products/student-continuity-cover",
+  },
+  {
+    label: "School Expenses Cover",
+    href: "/products/school-expenses-cover",
+  },
+  {
+    label: "Placement Insurance",
+    href: "/products/placement-insurance",
+  },
+];
+
 const navLinks = [
   { label: "Pricing", href: "/pricing" },
   { label: "School Directory", href: "/school-directory" },
@@ -23,6 +42,24 @@ export default function Navigation() {
 
   return (
     <nav className="hidden lg:flex items-center gap-1">
+      <div className="relative group">
+        <button className="px-4 py-2 text-base font-semibold text-navy hover:text-magenta transition-colors rounded-lg hover:bg-off-white flex items-center gap-1">
+          Products
+          <ChevronDown className="w-4 h-4" />
+        </button>
+        <div className="absolute top-full left-0 mt-2 w-64 rounded-xl bg-white p-2 shadow-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 border border-grey-300">
+          {productLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="block rounded-lg px-4 py-3 text-sm font-semibold text-navy hover:bg-grey-100 hover:text-magenta transition-colors"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      </div>
+
       <Link href="/how-it-works" className={linkClass("/how-it-works")}>
         How It Works
       </Link>

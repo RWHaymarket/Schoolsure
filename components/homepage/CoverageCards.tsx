@@ -41,9 +41,14 @@ export default function CoverageCards() {
             <div className="mt-4 text-magenta">
               <ShieldCheck className="h-7 w-7" />
             </div>
-            <h3 className="mt-3 text-[24px] font-semibold text-navy">
-              Parent Continuity Cover
-            </h3>
+            <Link
+              href="/products/parent-continuity-cover"
+              className="mt-3 inline-flex"
+            >
+              <h3 className="text-[24px] font-semibold text-navy">
+                Parent Continuity Cover
+              </h3>
+            </Link>
             <p className="mt-3 text-[16px] leading-relaxed text-grey-700">
               If something happens to you, your child&apos;s school fees continue
               — paid directly to the school. Covers death, terminal illness,
@@ -77,9 +82,14 @@ export default function CoverageCards() {
             <div className="mt-4 text-navy">
               <HeartPulse className="h-7 w-7" />
             </div>
-            <h3 className="mt-3 text-[24px] font-semibold text-navy">
-              Student Continuity Cover
-            </h3>
+            <Link
+              href="/products/student-continuity-cover"
+              className="mt-3 inline-flex"
+            >
+              <h3 className="text-[24px] font-semibold text-navy">
+                Student Continuity Cover
+              </h3>
+            </Link>
             <p className="mt-3 text-[16px] leading-relaxed text-grey-700">
               Covers school fees if your child suffers a severe illness, injury,
               or mental health condition that prevents them attending for an
@@ -113,9 +123,14 @@ export default function CoverageCards() {
             <div className="mt-4 text-navy">
               <BookOpen className="h-7 w-7" />
             </div>
-            <h3 className="mt-3 text-[24px] font-semibold text-navy">
-              School Expenses Cover
-            </h3>
+            <Link
+              href="/products/school-expenses-cover"
+              className="mt-3 inline-flex"
+            >
+              <h3 className="text-[24px] font-semibold text-navy">
+                School Expenses Cover
+              </h3>
+            </Link>
             <p className="mt-3 text-[16px] leading-relaxed text-grey-700">
               Covers non-refundable school books, transport, and uniform costs
               when a covered event means your child can&apos;t use them. Up to
@@ -153,9 +168,14 @@ export default function CoverageCards() {
             <div className="mt-4 text-white">
               <GraduationCap className="h-7 w-7" />
             </div>
-            <h3 className="mt-3 text-[24px] font-semibold text-white">
-              School Place Deposit Cover
-            </h3>
+            <Link
+              href="/products/placement-insurance"
+              className="mt-3 inline-flex"
+            >
+              <h3 className="text-[24px] font-semibold text-white">
+                School Place Deposit Cover
+              </h3>
+            </Link>
             <p className="mt-3 text-[16px] leading-relaxed text-white/85">
               Protect non-refundable application, enrolment, and entrance fees
               if unforeseen events prevent your child taking up their school
