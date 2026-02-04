@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "../styles/globals.css";
-import Header from "../components/layout/Header";
-import Footer from "../components/layout/Footer";
+import AppShell from "../components/layout/AppShell";
 import PageTransition from "../components/shared/PageTransition";
 
 export const metadata: Metadata = {
@@ -17,11 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-background text-foreground antialiased">
-        <Header />
-        <main>
+        <AppShell>
           <PageTransition>{children}</PageTransition>
-        </main>
-        <Footer />
+        </AppShell>
       </body>
     </html>
   );

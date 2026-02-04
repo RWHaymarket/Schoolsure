@@ -42,6 +42,12 @@ export default function Header() {
           <>
             <Navigation />
             <div className="hidden items-center gap-4 lg:flex">
+              <Link
+                href="/account/login"
+                className="text-base font-semibold text-navy hover:text-magenta"
+              >
+                Login
+              </Link>
               <Link href="/quote/school">
                 <Button
                   variant="primary"

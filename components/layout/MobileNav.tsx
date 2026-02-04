@@ -35,6 +35,11 @@ const navLinks = [
     href: "/faqs",
     desc: "Common questions answered",
   },
+  {
+    name: "Login",
+    href: "/account/login",
+    desc: "Access your parent account",
+  },
 ];
 
 const productLinks = [

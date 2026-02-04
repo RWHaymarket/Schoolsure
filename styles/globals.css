@@ -242,6 +242,33 @@
   .pulse-soft {
     animation: pulse-soft 1.5s ease-in-out infinite;
   }
+
+  .admin-card {
+    background: var(--admin-surface);
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+  }
+
+  .admin-input {
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    color: var(--admin-text);
+  }
+
+  .admin-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .admin-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--admin-border);
+    border-radius: 999px;
+  }
+
+  .admin-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
 }
 
 @keyframes shimmer {
@@ -260,5 +287,108 @@
   }
   50% {
     opacity: 1;
+  }
+}
+
+.admin-root {
+  --admin-bg: #0f1419;
+  --admin-surface: #1a2332;
+  --admin-surface-hover: #1e2a3a;
+  --admin-border: #2a3a4a;
+  --admin-text: #e8ecf0;
+  --admin-text-muted: #8899aa;
+  --admin-accent: #d6336c;
+  --admin-accent-hover: #e8477e;
+  --admin-success: #38a169;
+  --admin-warning: #ecc94b;
+  --admin-error: #e53e3e;
+  --admin-info: #4299e1;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-size: 14px;
+}
+
+.admin-pulse {
+  animation: admin-pulse 2s ease-in-out infinite;
+}
+
+.admin-activity-item {
+  animation: admin-slide-in 200ms ease-out;
+}
+
+.admin-sparkline {
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: admin-draw 800ms ease-out forwards;
+}
+
+.admin-bar {
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: admin-bar-grow 400ms ease-out forwards;
+}
+
+@keyframes admin-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes admin-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes admin-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes admin-bar-grow {
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-pulse,
+  .admin-activity-item,
+  .admin-sparkline,
+  .admin-bar {
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+@media print {
+  .admin-root {
+    background: #ffffff;
+    color: #1a2332;
+  }
+
+  .admin-print-hide {
+    display: none !important;
+  }
+
+  .admin-print-only {
+    display: block !important;
+  }
+
+  .admin-card {
+    border-color: #d7dee8;
+    background: #ffffff;
   }
 }
