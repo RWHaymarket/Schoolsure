@@ -66,6 +66,7 @@ export default function MobileNav() {
   const [productsOpen, setProductsOpen] = useState(false);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";

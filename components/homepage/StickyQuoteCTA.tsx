@@ -9,6 +9,7 @@ export default function StickyQuoteCTA() {
   const [overFooter, setOverFooter] = useState(false);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     const hero = document.getElementById("hero");
     const footer = document.querySelector("footer");
     if (!hero) {

@@ -31,6 +31,7 @@ export default function Toast({
   const Icon = variantConfig[variant].icon;
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
     const timer = window.setTimeout(onClose, 4000);
     return () => window.clearTimeout(timer);
   }, [onClose]);

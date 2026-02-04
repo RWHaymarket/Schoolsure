@@ -23,6 +23,10 @@ export default function Hero() {
       router.push("/quote/school");
       return;
     }
+    if (typeof window === "undefined") {
+      router.push("/quote/school");
+      return;
+    }
     window.setTimeout(() => {
       router.push("/quote/school");
     }, 400);

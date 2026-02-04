@@ -39,7 +39,11 @@ export default function AccountAddCoverPage() {
         PRICING_CONFIG.productC.flatRate
       )} per child/year`,
     },
-  ].filter(Boolean);
+  ].filter(
+    (
+      addon
+    ): addon is { title: string; description: string; price: string } => Boolean(addon)
+  );
 
   return (
     <div className="space-y-6">

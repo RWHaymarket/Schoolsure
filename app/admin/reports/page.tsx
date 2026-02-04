@@ -127,6 +127,7 @@ export default function AdminReportsPage() {
     : 0;
 
   const handleExportCsv = () => {
+    if (typeof window === "undefined") return;
     const headers = [
       "Month",
       "Quotes",
@@ -360,7 +361,11 @@ export default function AdminReportsPage() {
             </button>
             <button
               type="button"
-              onClick={() => window.print()}
+              onClick={() => {
+                if (typeof window !== "undefined") {
+                  window.print();
+                }
+              }}
               className="flex items-center gap-2 rounded-md border border-[var(--admin-border)] px-4 py-2 text-sm text-[var(--admin-text)]"
             >
               <Printer className="h-4 w-4" />

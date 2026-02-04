@@ -69,6 +69,7 @@ export default function SchoolSearch({
   }, [query]);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     const handleClickOutside = (event: MouseEvent) => {
       if (
         dropdownRef.current &&

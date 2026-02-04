@@ -39,6 +39,7 @@ export default function AccountMobileNav() {
   const initials = `${mockAccount.parent.firstName[0]}${mockAccount.parent.lastName[0]}`;
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";

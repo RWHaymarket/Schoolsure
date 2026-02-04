@@ -18,7 +18,7 @@ import Input from "@/components/ui/Input";
 import StepTransition, { useStepTransition } from "@/components/quote/StepTransition";
 import SkeletonTable from "@/components/shared/SkeletonTable";
 import { formatCurrency } from "@/lib/utils";
-import { useQuoteStore } from "@/store/useQuoteStore";
+import { useQuoteStore, type Child } from "@/store/useQuoteStore";
 
 const paymentOptions = {
   annual: "annual",
@@ -44,14 +44,13 @@ function QuoteReviewStepContent() {
     parentEmail,
     parentPhone,
     parentDob,
+    parentTitle,
+    parentPostcode,
     children,
     premiumBreakdown,
     quoteReference,
     generateQuoteRef,
   } = store;
-
-  const parentTitle = (store as any).parentTitle ?? "";
-  const parentPostcode = (store as any).parentPostcode ?? "";
 
   useEffect(() => {
     if (!quoteReference) {
@@ -240,7 +239,7 @@ function QuoteReviewStepContent() {
               </div>
               <div className="mt-4 space-y-4">
                 {children.length ? (
-                  children.map((child: any, index: number) => (
+                  children.map((child, index) => (
                     <div key={`${child.firstName || "child"}-${index}`}>
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div>
@@ -314,7 +313,7 @@ function QuoteReviewStepContent() {
                 <>
                   <div className="mt-4 space-y-6">
                     {premiumBreakdown.children?.map((child, index) => {
-                      const childData = children[index] as any;
+                      const childData: Child | undefined = children[index];
                       const childLabel =
                         [childData?.firstName, childData?.lastName]
                           .filter(Boolean)

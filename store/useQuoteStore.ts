@@ -6,8 +6,12 @@ import type { PremiumBreakdown } from "@/types/premium";
 
 interface Child {
   firstName: string;
+  lastName?: string;
   dateOfBirth: string;
+  gender?: string;
   yearLevel: string;
+  schoolName?: string;
+  annualFee?: number;
 }
 
 interface QuoteState {
@@ -30,6 +34,8 @@ interface QuoteState {
   parentEmail: string;
   parentPhone: string;
   parentDob: string;
+  parentTitle: string;
+  parentPostcode: string;
   children: Child[];
 
   quoteReference: string;
@@ -157,6 +163,8 @@ const initialState = {
   parentEmail: "",
   parentPhone: "",
   parentDob: "",
+  parentTitle: "",
+  parentPostcode: "",
   children: [],
   quoteReference: "",
   premiumBreakdown: calculatePremium({

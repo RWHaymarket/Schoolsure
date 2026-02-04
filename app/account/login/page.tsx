@@ -15,6 +15,10 @@ export default function AccountLoginPage() {
   const handleSubmit = () => {
     if (loading) return;
     setLoading(true);
+    if (typeof window === "undefined") {
+      router.push("/account");
+      return;
+    }
     window.setTimeout(() => {
       router.push("/account");
     }, 600);

@@ -191,6 +191,7 @@ export default function PlacementPageClient() {
     const order = ["firstName", "lastName", "email", "depositAmount"];
     const firstKey = order.find((key) => nextErrors[key]);
     if (!firstKey) return;
+    if (typeof document === "undefined") return;
     const element = document.getElementById(`placement-${firstKey}`);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "center" });

@@ -73,6 +73,7 @@ export default function AdminQuotesPage() {
   }, [filtered]);
 
   const handleExport = () => {
+    if (typeof window === "undefined") return;
     const headers = [
       "Quote ID",
       "Date",

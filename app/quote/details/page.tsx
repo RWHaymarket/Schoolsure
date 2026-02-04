@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, type FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -106,10 +106,18 @@ type FormValues = z.infer<typeof formSchema>;
 const selectClassName =
   "h-[52px] w-full rounded-[10px] border-2 border-transparent bg-grey-100 px-4 text-base text-navy transition-all duration-150 ease-out focus:border-magenta focus:bg-white focus:outline-none focus:ring-4 focus:ring-magenta/20";
 
-const getFirstErrorName = (errors: Record<string, any>, prefix = ""): string | null => {
+const getFirstErrorName = (
+  errors: Record<string, unknown>,
+  prefix = ""
+): string | null => {
   for (const key of Object.keys(errors)) {
     const value = errors[key];
-    if (value?.message) {
+    if (
+      value &&
+      typeof value === "object" &&
+      "message" in value &&
+      typeof (value as { message?: unknown }).message === "string"
+    ) {
       return `${prefix}${key}`;
     }
     if (value && typeof value === "object") {
@@ -137,12 +145,11 @@ function QuoteDetailsStepContent() {
     parentEmail,
     parentPhone,
     parentDob,
+    parentTitle,
+    parentPostcode,
     children,
     setParentDetails,
   } = store;
-
-  const parentTitle = (store as any).parentTitle ?? "";
-  const parentPostcode = (store as any).parentPostcode ?? "";
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -157,7 +164,7 @@ function QuoteDetailsStepContent() {
       parentDob,
       parentPostcode,
       children: children.length
-        ? children.map((child: any) => ({
+        ? children.map((child) => ({
             firstName: child.firstName || "",
             lastName: child.lastName || "",
             dateOfBirth: child.dateOfBirth || "",
@@ -202,8 +209,8 @@ function QuoteDetailsStepContent() {
         parentDob: values.parentDob || "",
         parentTitle: values.parentTitle || "",
         parentPostcode: values.parentPostcode || "",
-        children: nextChildren as any,
-      } as any);
+        children: nextChildren,
+      });
     });
 
     return () => subscription.unsubscribe();
@@ -241,9 +248,10 @@ function QuoteDetailsStepContent() {
     });
   };
 
-  const onInvalid = (errors: Record<string, any>) => {
+  const onInvalid = (errors: FieldErrors<FormValues>) => {
     const firstError = getFirstErrorName(errors);
     if (!firstError) return;
+    if (typeof document === "undefined") return;
     const selector = `[name="${firstError}"]`;
     const element = document.querySelector(selector) as HTMLElement | null;
     if (element) {
