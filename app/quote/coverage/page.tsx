@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   ArrowRight,
@@ -13,6 +13,8 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
+import StepTransition, { useStepTransition } from "@/components/quote/StepTransition";
+import SkeletonCard from "@/components/shared/SkeletonCard";
 import { PRICING_CONFIG } from "@/lib/pricing-config";
 import { formatCurrency } from "@/lib/utils";
 import { useQuoteStore } from "@/store/useQuoteStore";
@@ -43,9 +45,12 @@ const Toggle = ({
   </button>
 );
 
-export default function QuoteCoverageStep() {
+function QuoteCoverageStepContent() {
   const router = useRouter();
   const [showMobileBreakdown, setShowMobileBreakdown] = useState(false);
+  const { startTransition, isTransitioning, buttonLabel, showButtonLoading } =
+    useStepTransition();
+  const [showSkeleton, setShowSkeleton] = useState(true);
   const {
     schoolName,
     annualFees,
@@ -78,6 +83,54 @@ export default function QuoteCoverageStep() {
       daily: `From ${formatCurrency(dailyEquivalent)} per day`,
     };
   }, [annualTotal, dailyEquivalent, hasPricing, monthlyTotal]);
+
+  useEffect(() => {
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setShowSkeleton(false);
+      return;
+    }
+    const minTimer = window.setTimeout(() => setShowSkeleton(false), 300);
+    const maxTimer = window.setTimeout(() => setShowSkeleton(false), 2000);
+    return () => {
+      window.clearTimeout(minTimer);
+      window.clearTimeout(maxTimer);
+    };
+  }, []);
+
+  if (showSkeleton) {
+    return (
+      <section className="bg-white">
+        <div className="mx-auto max-w-[1200px] px-6 lg:px-12 py-12">
+          <div className="mb-8">
+            <div className="h-8 w-48 rounded-lg skeleton-shimmer" />
+            <div className="mt-3 h-4 w-80 rounded-lg skeleton-shimmer" />
+          </div>
+          <div className="grid gap-6 lg:grid-cols-12">
+            <div className="space-y-6 lg:col-span-8">
+              <SkeletonCard lines={5} />
+              <SkeletonCard lines={4} />
+              <SkeletonCard lines={3} />
+            </div>
+            <div className="hidden lg:block lg:col-span-4">
+              <SkeletonCard lines={4} />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const handleContinue = () => {
+    if (isTransitioning) return;
+    if (!hasPricing) return;
+    startTransition({
+      message: "Saving your selections...",
+      onComplete: () => router.push("/quote/details"),
+    });
+  };
 
   return (
     <section className="bg-white">
@@ -339,7 +392,7 @@ export default function QuoteCoverageStep() {
 
               <button
                 type="button"
-                onClick={() => router.push("/quote/details")}
+                onClick={handleContinue}
                 disabled={!hasPricing}
                 className={`mt-6 w-full rounded-[10px] px-6 py-3 text-[16px] font-semibold text-white transition-all duration-200 ease-out ${
                   hasPricing
@@ -347,7 +400,14 @@ export default function QuoteCoverageStep() {
                     : "bg-[#E2E8F0] text-[#A0AEC0] cursor-not-allowed"
                 } focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2D3E50] focus-visible:outline-offset-2`}
               >
-                Continue
+                {showButtonLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                    {buttonLabel}
+                  </span>
+                ) : (
+                  "Continue"
+                )}
               </button>
 
               <div className="mt-4 text-[13px] text-[#A0AEC0] text-center">
@@ -386,13 +446,20 @@ export default function QuoteCoverageStep() {
             </button>
             <button
               type="button"
-              onClick={() => router.push("/quote/details")}
+              onClick={handleContinue}
               disabled={!hasPricing}
               className={`mt-3 w-full rounded-[10px] px-6 py-3 text-[16px] font-semibold text-white transition-all duration-200 ease-out ${
                 hasPricing ? "bg-[#D6336C] hover:bg-[#C2255C]" : "bg-[#E2E8F0] text-[#A0AEC0] cursor-not-allowed"
               } focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2D3E50] focus-visible:outline-offset-2`}
             >
-              Continue
+              {showButtonLoading ? (
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                  {buttonLabel}
+                </span>
+              ) : (
+                "Continue"
+              )}
             </button>
           </div>
 
@@ -430,5 +497,13 @@ export default function QuoteCoverageStep() {
         </div>
       </div>
     </section>
+  );
+}
+
+export default function QuoteCoverageStep() {
+  return (
+    <StepTransition>
+      <QuoteCoverageStepContent />
+    </StepTransition>
   );
 }

@@ -1,14 +1,18 @@
 "use client";
 
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2, Clock, Info, Lock, Shield, XCircle } from "lucide-react";
 
 import Button from "@/components/ui/Button";
-import FaqAccordion from "@/components/products/FaqAccordion";
 import ScenariosSection, {
   ICONS,
   type IconKey,
 } from "@/components/products/ScenariosSection";
+import FaqSection from "@/components/shared/FaqSection";
+import SkeletonCard from "@/components/shared/SkeletonCard";
+import SkeletonTable from "@/components/shared/SkeletonTable";
+import SkeletonText from "@/components/shared/SkeletonText";
 
 type BadgeVariant = "magenta" | "navy" | "white-on-navy";
 
@@ -109,7 +113,25 @@ export default function ProductLandingPage({
 }: {
   product: ProductLandingConfig;
 }) {
+  const [showSkeleton, setShowSkeleton] = useState(true);
+  const prefersReducedMotion = useMemo(() => {
+    if (typeof window === "undefined") return true;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
   const isStandaloneCrossSell = product.id === "D";
+
+  useEffect(() => {
+    if (prefersReducedMotion) {
+      setShowSkeleton(false);
+      return;
+    }
+    const minTimer = window.setTimeout(() => setShowSkeleton(false), 300);
+    const maxTimer = window.setTimeout(() => setShowSkeleton(false), 2000);
+    return () => {
+      window.clearTimeout(minTimer);
+      window.clearTimeout(maxTimer);
+    };
+  }, [prefersReducedMotion]);
 
   return (
     <div className="bg-white">
@@ -268,7 +290,17 @@ export default function ProductLandingPage({
           <p className="mt-2 text-[16px] text-grey-700">
             No hidden fees. No surprises.
           </p>
-          {product.pricingSection.type === "table" ? (
+          {showSkeleton ? (
+            product.pricingSection.type === "table" ? (
+              <SkeletonTable
+                rows={product.pricingSection.rows.length}
+                columns={product.pricingSection.columns.length}
+                className="mt-8"
+              />
+            ) : (
+              <SkeletonCard className="mt-8 mx-auto max-w-[400px]" lines={4} />
+            )
+          ) : product.pricingSection.type === "table" ? (
             <div className="mt-8 overflow-hidden rounded-2xl border border-grey-300 bg-white text-left">
               <div
                 className="grid bg-navy text-[14px] font-semibold text-white"
@@ -284,15 +316,15 @@ export default function ProductLandingPage({
               </div>
               <div>
                 {product.pricingSection.rows.map((row, index) => (
-                <div
-                  key={`${row[0]}-${index}`}
-                  className={`grid text-[16px] text-navy ${
-                    index % 2 === 1 ? "bg-grey-100" : "bg-white"
-                  }`}
-                  style={{
-                    gridTemplateColumns: `repeat(${product.pricingSection.columns.length}, minmax(0, 1fr))`,
-                  }}
-                >
+                  <div
+                    key={`${row[0]}-${index}`}
+                    className={`grid text-[16px] text-navy ${
+                      index % 2 === 1 ? "bg-grey-100" : "bg-white"
+                    }`}
+                    style={{
+                      gridTemplateColumns: `repeat(${product.pricingSection.columns.length}, minmax(0, 1fr))`,
+                    }}
+                  >
                     {row.map((cell, cellIndex) => (
                       <div key={`${cell}-${cellIndex}`} className="px-4 py-3">
                         {cell}
@@ -353,16 +385,20 @@ export default function ProductLandingPage({
         />
       </section>
 
-      <section className="bg-off-white py-20">
-        <div className="mx-auto max-w-[720px] px-6">
-          <h2 className="text-center text-[28px] font-black text-navy">
-            Common questions
-          </h2>
-          <div className="mt-8">
-            <FaqAccordion items={product.faqs} />
+      {showSkeleton ? (
+        <section className="bg-off-white py-20">
+          <div className="mx-auto max-w-[720px] px-6">
+            <SkeletonText width="60%" height={28} className="mx-auto" />
+            <div className="mt-8 space-y-3">
+              {Array.from({ length: 5 }).map((_, index) => (
+                <SkeletonCard key={index} lines={2} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <FaqSection title="Common questions" faqs={product.faqs} theme="light" />
+      )}
 
       <section className="bg-white py-16">
         <div className="mx-auto max-w-[960px] px-6 text-center">

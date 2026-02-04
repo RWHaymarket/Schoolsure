@@ -8,14 +8,17 @@ import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import InfoBox from "@/components/shared/InfoBox";
+import StepTransition, { useStepTransition } from "@/components/quote/StepTransition";
 import { formatFeeInput } from "@/lib/utils";
 import { useQuoteStore } from "@/store/useQuoteStore";
 import SchoolSearch from "@/components/quote/SchoolSearch";
 import { School } from "@/data/schools";
 
-export default function QuoteSchoolStep() {
+function QuoteSchoolStepContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { startTransition, isTransitioning, buttonLabel, showButtonLoading } =
+    useStepTransition();
   const {
     schoolId,
     schoolName,
@@ -66,13 +69,17 @@ export default function QuoteSchoolStep() {
     : null;
 
   const handleContinue = () => {
+    if (isTransitioning) return;
     const nextErrors = [];
     if (!schoolName) nextErrors.push("School name is required.");
     if (!annualFees) nextErrors.push("Annual fees are required.");
     if (!yearLevel) nextErrors.push("Year level is required.");
     setErrors(nextErrors);
     if (nextErrors.length === 0) {
-      router.push("/quote/coverage");
+      startTransition({
+        message: "Preparing your cover options...",
+        onComplete: () => router.push("/quote/coverage"),
+      });
     }
   };
 
@@ -202,13 +209,30 @@ export default function QuoteSchoolStep() {
                 </span>
               </div>
               <Button onClick={handleContinue}>
-                Continue
-                <ArrowRight className="h-4 w-4" />
+                {showButtonLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                    {buttonLabel}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-2">
+                    Continue
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                )}
               </Button>
             </div>
           </div>
         </Card>
       </div>
     </section>
+  );
+}
+
+export default function QuoteSchoolStep() {
+  return (
+    <StepTransition>
+      <QuoteSchoolStepContent />
+    </StepTransition>
   );
 }

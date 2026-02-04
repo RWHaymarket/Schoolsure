@@ -74,12 +74,18 @@ export default function PlacementPageClient() {
   const [pdsAccepted, setPdsAccepted] = useState(false);
   const [pdsError, setPdsError] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [quoteReference, setQuoteReference] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [emailCaptureVisible, setEmailCaptureVisible] = useState(false);
   const [emailCaptureSaved, setEmailCaptureSaved] = useState(false);
   const [emailCaptureDismissed, setEmailCaptureDismissed] = useState(false);
   const [emailCaptureValue, setEmailCaptureValue] = useState("");
+
+  const prefersReducedMotion = useMemo(() => {
+    if (typeof window === "undefined") return true;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
 
   const ctaRef = useRef<HTMLDivElement | null>(null);
   const pdsRef = useRef<HTMLDivElement | null>(null);
@@ -203,13 +209,28 @@ export default function PlacementPageClient() {
       pdsRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
+    if (isProcessing) return;
     setPdsError(false);
-    setQuoteReference(buildReference());
-    setIsSubmitted(true);
-    setEmailCaptureVisible(false);
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    if (prefersReducedMotion) {
+      setQuoteReference(buildReference());
+      setIsSubmitted(true);
+      setEmailCaptureVisible(false);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      return;
     }
+    setIsProcessing(true);
+    const delay = Math.floor(Math.random() * 500) + 1000;
+    window.setTimeout(() => {
+      setQuoteReference(buildReference());
+      setIsSubmitted(true);
+      setEmailCaptureVisible(false);
+      setIsProcessing(false);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, delay);
   };
 
   const handleEmailCapture = () => {
@@ -323,7 +344,17 @@ export default function PlacementPageClient() {
   }
 
   return (
-    <section className="bg-white">
+    <section className="bg-white relative">
+      {isProcessing ? (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm">
+          <div className="flex flex-col items-center">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-grey-300 border-t-magenta" />
+            <div className="mt-4 text-[16px] font-semibold text-navy pulse-soft">
+              Securing your deposit cover...
+            </div>
+          </div>
+        </div>
+      ) : null}
       <div className="mx-auto max-w-[960px] px-6 py-12 md:px-12">
         <div className="text-center">
           <h1 className="text-[28px] font-black text-navy md:text-[36px]">
@@ -582,7 +613,14 @@ export default function PlacementPageClient() {
           </div>
 
           <Button className="mt-5 w-full" onClick={handleSubmit}>
-            Get Covered — {formatCurrency(selectedData.premium)}
+            {isProcessing ? (
+              <span className="inline-flex items-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                Processing...
+              </span>
+            ) : (
+              `Get Covered — ${formatCurrency(selectedData.premium)}`
+            )}
           </Button>
 
           <div className="mt-3 space-y-1 text-center text-[13px] text-grey-500">

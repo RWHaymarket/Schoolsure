@@ -203,19 +203,14 @@ const productAConfig: ProductLandingConfig = {
         "SchoolSure pays fees directly to the school — not to you. This ensures the money goes where it's needed: keeping your child in school. You notify us, engage with your school's own hardship process first, and we pay the net remaining fee.",
     },
     {
-      question: "What if my school offers a fee reduction?",
-      answer:
-        "SchoolSure pays the net remaining fee after any school-provided relief, bursary, or fee reduction. This prevents double-recovery and keeps premiums lower for everyone.",
-    },
-    {
-      question: "Is redundancy covered?",
-      answer:
-        "Not at launch. Redundancy presents complex underwriting challenges, particularly with AI-related job displacement. We're investigating contained-risk structures for a future product enhancement.",
-    },
-    {
       question: "Can I cover more than one child?",
       answer:
         "Yes. Each additional child on the same policy receives a 10% multi-child discount on their total premium.",
+    },
+    {
+      question: "Can I see the full Product Disclosure Statement?",
+      answer:
+        "Yes. The Product Disclosure Statement (PDS) and Financial Services Guide (FSG) are available before you purchase. These documents contain the full terms, conditions, exclusions, and your rights under the policy. You can request them during the quote process or contact us directly.",
     },
   ],
   crossSells: [
@@ -401,6 +396,11 @@ const productBConfig: ProductLandingConfig = {
       question: "What if my child changes school because of the condition?",
       answer:
         "Cover applies to fees at the school where the child was enrolled when the condition began. If your child transfers during the absence, the benefit covers the original school's fees.",
+    },
+    {
+      question: "How does this work alongside the school's own support?",
+      answer:
+        "Many schools offer wellbeing programmes, counselling, and flexible attendance arrangements. Student Continuity Cover works alongside — not instead of — these school resources. You're required to engage with the school's own hardship and fee relief process first. SchoolSure pays the net remaining fee after any school-provided relief.",
     },
   ],
   crossSells: [
@@ -603,6 +603,11 @@ const productCConfig: ProductLandingConfig = {
           PRICING_CONFIG.productC.flatRate * 2
         )}. The multi-child discount on the core cover doesn't apply to the flat-rate expenses cover.`,
     },
+    {
+      question: "Is there a deadline for submitting expense receipts?",
+      answer:
+        "Receipts should be submitted within 60 days of the triggering event. We accept digital copies, photos of receipts, or school invoices. If you're having difficulty gathering documentation during a stressful period, contact us — we'll work with you.",
+    },
   ],
   crossSells: [
     {
@@ -779,7 +784,7 @@ const productDConfig: ProductLandingConfig = {
     {
       question: "Can I cover deposits at multiple schools?",
       answer:
-        "Yes. Purchase one policy per school placement. Each policy covers the deposit for a specific school application.",
+        "Yes. Purchase one policy per school placement. Each policy covers the deposit for a specific school application. If you apply to two schools, you can protect both deposits with two separate policies so each is covered at the appropriate level.",
     },
     {
       question: "What if my deposit exceeds the level I chose?",
@@ -798,6 +803,11 @@ const productDConfig: ProductLandingConfig = {
       question: "Can I get a refund on the insurance if I don't need to claim?",
       answer:
         "Yes. You have a 30-day cooling off period from purchase. After that, the one-off premium is non-refundable — but the cover remains active.",
+    },
+    {
+      question: "Can I buy this after I've already paid the deposit?",
+      answer:
+        "Yes. You can purchase Placement Insurance at any time before the school's commencement date, as long as no covered event has already occurred. We recommend purchasing as soon as you pay the deposit for maximum protection.",
     },
   ],
   crossSells: [

@@ -18,6 +18,7 @@ import {
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
+import StepTransition, { useStepTransition } from "@/components/quote/StepTransition";
 import { formatCurrency, formatPhone } from "@/lib/utils";
 import { useQuoteStore } from "@/store/useQuoteStore";
 
@@ -119,9 +120,11 @@ const getFirstErrorName = (errors: Record<string, any>, prefix = ""): string | n
   return null;
 };
 
-export default function QuoteDetailsStep() {
+function QuoteDetailsStepContent() {
   const router = useRouter();
   const store = useQuoteStore();
+  const { startTransition, isTransitioning, buttonLabel, showButtonLoading } =
+    useStepTransition();
   const {
     schoolName,
     annualFees,
@@ -231,7 +234,11 @@ export default function QuoteDetailsStep() {
   }, [premiumBreakdown.children]);
 
   const onSubmit = () => {
-    router.push("/quote/review");
+    if (isTransitioning) return;
+    startTransition({
+      message: "Building your quote...",
+      onComplete: () => router.push("/quote/review"),
+    });
   };
 
   const onInvalid = (errors: Record<string, any>) => {
@@ -758,8 +765,17 @@ export default function QuoteDetailsStep() {
                 </span>
               </div>
               <Button type="submit">
-                Continue to Review
-                <ArrowRight className="h-4 w-4" />
+                {showButtonLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                    {buttonLabel}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-2">
+                    Continue to Review
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                )}
               </Button>
             </div>
           </form>
@@ -827,8 +843,17 @@ export default function QuoteDetailsStep() {
               </div>
 
               <Button className="mt-6 w-full" onClick={onContinue}>
-                Continue to Review
-                <ArrowRight className="h-4 w-4" />
+                {showButtonLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                    {buttonLabel}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-2">
+                    Continue to Review
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                )}
               </Button>
 
               <div className="mt-4 space-y-2 text-[13px] text-grey-500">
@@ -857,10 +882,25 @@ export default function QuoteDetailsStep() {
             </div>
           </div>
           <Button className="min-w-[140px]" onClick={onContinue}>
-            Continue
+            {showButtonLoading ? (
+              <span className="inline-flex items-center gap-2">
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                {buttonLabel}
+              </span>
+            ) : (
+              "Continue"
+            )}
           </Button>
         </div>
       </div>
     </section>
+  );
+}
+
+export default function QuoteDetailsStep() {
+  return (
+    <StepTransition>
+      <QuoteDetailsStepContent />
+    </StepTransition>
   );
 }

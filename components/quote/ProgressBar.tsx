@@ -15,10 +15,17 @@ const steps = [
 ];
 
 export default function ProgressBar({ currentStep }: ProgressBarProps) {
+  const progressPercent = ((currentStep - 1) / (steps.length - 1)) * 100;
   return (
     <div className="w-full">
       <div className="relative">
         <div className="absolute left-4 right-4 top-5 h-0.5 bg-grey-200" />
+        <div className="absolute left-4 right-4 top-5 h-0.5">
+          <div
+            className="h-full bg-magenta transition-[width] duration-300 ease-out"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
         <div className="grid grid-cols-4 gap-2">
           {steps.map((step) => {
             const isActive = step.number === currentStep;
@@ -28,10 +35,14 @@ export default function ProgressBar({ currentStep }: ProgressBarProps) {
                 {isComplete ? (
                   <Link
                     href={step.path}
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-navy shadow-sm"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-navy shadow-sm transition-transform duration-200 ease-out"
                     aria-label={`Go to ${step.label}`}
                   >
-                    <Check className="h-5 w-5 text-white" />
+                    <Check
+                      className={`h-5 w-5 text-white transition-transform duration-200 ease-out ${
+                        isComplete ? "scale-100" : "scale-0"
+                      }`}
+                    />
                   </Link>
                 ) : (
                   <div

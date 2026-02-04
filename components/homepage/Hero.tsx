@@ -1,10 +1,33 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowRight, ChevronDown, Shield, Users, Zap } from "lucide-react";
 
 import Button from "@/components/ui/Button";
 
 export default function Hero() {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const prefersReducedMotion = useMemo(() => {
+    if (typeof window === "undefined") return true;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }, []);
+
+  const handleQuoteClick = () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    if (prefersReducedMotion) {
+      router.push("/quote/school");
+      return;
+    }
+    window.setTimeout(() => {
+      router.push("/quote/school");
+    }, 400);
+  };
+
   return (
     <section id="hero" className="relative overflow-hidden bg-navy pb-0">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 pt-24 pb-16 md:grid-cols-2 md:items-stretch">
@@ -20,17 +43,25 @@ export default function Hero() {
             Covers Kindy to Year 12. Get covered for less than the cost of a
             coffee a day.
           </p>
-          <div className="mt-auto">
+            <div className="mt-auto">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-              <Link href="/quote/school" className="w-full sm:w-auto">
-                <Button
-                  size="lg"
-                  className="w-full text-lg min-h-[56px] shadow-lg shadow-magenta/25"
-                >
-                  Get Your Quote
-                  <ArrowRight className="h-5 w-5" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                className="w-full sm:w-auto text-lg min-h-[56px] shadow-lg shadow-magenta/25"
+                onClick={handleQuoteClick}
+              >
+                {isLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                    Loading...
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-2">
+                    Get Your Quote
+                    <ArrowRight className="h-5 w-5" />
+                  </span>
+                )}
+              </Button>
               <Link href="/how-it-works" className="w-full sm:w-auto">
                 <Button
                   variant="secondary"

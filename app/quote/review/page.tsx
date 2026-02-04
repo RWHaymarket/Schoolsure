@@ -15,6 +15,8 @@ import {
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
+import StepTransition, { useStepTransition } from "@/components/quote/StepTransition";
+import SkeletonTable from "@/components/shared/SkeletonTable";
 import { formatCurrency } from "@/lib/utils";
 import { useQuoteStore } from "@/store/useQuoteStore";
 
@@ -25,9 +27,11 @@ const paymentOptions = {
 
 type PaymentOption = (typeof paymentOptions)[keyof typeof paymentOptions];
 
-export default function QuoteReviewStep() {
+function QuoteReviewStepContent() {
   const router = useRouter();
   const store = useQuoteStore();
+  const { startTransition, isTransitioning, buttonLabel, showButtonLoading } =
+    useStepTransition();
   const {
     schoolName,
     annualFees,
@@ -63,6 +67,7 @@ export default function QuoteReviewStep() {
   const [saveEmail, setSaveEmail] = useState(parentEmail || "");
   const pdsDesktopRef = useRef<HTMLDivElement | null>(null);
   const pdsMobileRef = useRef<HTMLDivElement | null>(null);
+  const [showSkeleton, setShowSkeleton] = useState(true);
 
   const annualTotal = premiumBreakdown.annualTotal || 0;
   const annualWithDiscount = premiumBreakdown.annualWithDiscount || 0;
@@ -99,6 +104,7 @@ export default function QuoteReviewStep() {
   );
 
   const handleSecureCover = () => {
+    if (isTransitioning) return;
     if (!pdsAccepted) {
       setPdsError(true);
       const targetRef =
@@ -108,7 +114,13 @@ export default function QuoteReviewStep() {
       targetRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    router.push("/quote/confirmation");
+    startTransition({
+      message: "Securing your cover...",
+      buttonLabel: "Processing...",
+      minDelay: 1500,
+      maxDelay: 2000,
+      onComplete: () => router.push("/quote/confirmation"),
+    });
   };
 
   const handleSaveQuote = () => {
@@ -154,6 +166,22 @@ export default function QuoteReviewStep() {
       </label>
     </div>
   );
+
+  useEffect(() => {
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setShowSkeleton(false);
+      return;
+    }
+    const minTimer = window.setTimeout(() => setShowSkeleton(false), 300);
+    const maxTimer = window.setTimeout(() => setShowSkeleton(false), 2000);
+    return () => {
+      window.clearTimeout(minTimer);
+      window.clearTimeout(maxTimer);
+    };
+  }, []);
 
   return (
     <section className="bg-white">
@@ -278,69 +306,81 @@ export default function QuoteReviewStep() {
               <div className="text-[20px] font-semibold text-navy">
                 Price breakdown
               </div>
-              <div className="mt-4 space-y-6">
-                {premiumBreakdown.children?.map((child, index) => {
-                  const childData = children[index] as any;
-                  const childLabel =
-                    [childData?.firstName, childData?.lastName]
-                      .filter(Boolean)
-                      .join(" ") || `Child ${index + 1}`;
-                  return (
-                    <div key={`breakdown-${index}`}>
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <div className="text-base font-semibold text-navy">
-                          {childLabel}
+              {showSkeleton ? (
+                <div className="mt-4">
+                  <SkeletonTable rows={4} columns={2} />
+                </div>
+              ) : (
+                <>
+                  <div className="mt-4 space-y-6">
+                    {premiumBreakdown.children?.map((child, index) => {
+                      const childData = children[index] as any;
+                      const childLabel =
+                        [childData?.firstName, childData?.lastName]
+                          .filter(Boolean)
+                          .join(" ") || `Child ${index + 1}`;
+                      return (
+                        <div key={`breakdown-${index}`}>
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <div className="text-base font-semibold text-navy">
+                              {childLabel}
+                            </div>
+                            <div className="text-[14px] text-grey-500">
+                              {schoolName || "School name"}
+                            </div>
+                          </div>
+                          <div className="mt-2 h-px bg-grey-200" />
+                          <div className="mt-3 space-y-1 text-[14px]">
+                            <div className="flex items-center justify-between text-navy">
+                              <span>Parent Continuity Cover</span>
+                              <span>{formatCurrency(child.productA)}</span>
+                            </div>
+                            {child.fullTermUpgradeAmount ? (
+                              <div className="flex items-center justify-between text-grey-700">
+                                <span>Full Term Upgrade</span>
+                                <span>
+                                  +{formatCurrency(child.fullTermUpgradeAmount)}
+                                </span>
+                              </div>
+                            ) : null}
+                            {child.productB ? (
+                              <div className="flex items-center justify-between text-grey-700">
+                                <span>Student Continuity Cover</span>
+                                <span>+{formatCurrency(child.productB)}</span>
+                              </div>
+                            ) : null}
+                            {child.productC ? (
+                              <div className="flex items-center justify-between text-grey-700">
+                                <span>School Expenses Cover</span>
+                                <span>+{formatCurrency(child.productC)}</span>
+                              </div>
+                            ) : null}
+                            {child.multiChildDiscount ? (
+                              <div className="flex items-center justify-between text-magenta font-semibold">
+                                <span>Multi-child discount (10%)</span>
+                                <span>
+                                  −{formatCurrency(child.multiChildDiscount)}
+                                </span>
+                              </div>
+                            ) : null}
+                          </div>
+                          <div className="mt-3 h-px bg-grey-200" />
+                          <div className="mt-2 flex items-center justify-between text-[14px] font-semibold text-navy">
+                            <span>Total for {childLabel}</span>
+                            <span>{formatCurrency(child.childTotal)}</span>
+                          </div>
                         </div>
-                        <div className="text-[14px] text-grey-500">
-                          {schoolName || "School name"}
-                        </div>
-                      </div>
-                      <div className="mt-2 h-px bg-grey-200" />
-                      <div className="mt-3 space-y-1 text-[14px]">
-                        <div className="flex items-center justify-between text-navy">
-                          <span>Parent Continuity Cover</span>
-                          <span>{formatCurrency(child.productA)}</span>
-                        </div>
-                        {child.fullTermUpgradeAmount ? (
-                          <div className="flex items-center justify-between text-grey-700">
-                            <span>Full Term Upgrade</span>
-                            <span>+{formatCurrency(child.fullTermUpgradeAmount)}</span>
-                          </div>
-                        ) : null}
-                        {child.productB ? (
-                          <div className="flex items-center justify-between text-grey-700">
-                            <span>Student Continuity Cover</span>
-                            <span>+{formatCurrency(child.productB)}</span>
-                          </div>
-                        ) : null}
-                        {child.productC ? (
-                          <div className="flex items-center justify-between text-grey-700">
-                            <span>School Expenses Cover</span>
-                            <span>+{formatCurrency(child.productC)}</span>
-                          </div>
-                        ) : null}
-                        {child.multiChildDiscount ? (
-                          <div className="flex items-center justify-between text-magenta font-semibold">
-                            <span>Multi-child discount (10%)</span>
-                            <span>−{formatCurrency(child.multiChildDiscount)}</span>
-                          </div>
-                        ) : null}
-                      </div>
-                      <div className="mt-3 h-px bg-grey-200" />
-                      <div className="mt-2 flex items-center justify-between text-[14px] font-semibold text-navy">
-                        <span>Total for {childLabel}</span>
-                        <span>{formatCurrency(child.childTotal)}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+                      );
+                    })}
+                  </div>
 
-              <div className="mt-6 h-[2px] bg-navy" />
-              <div className="mt-4 flex items-center justify-between text-[24px] font-black text-navy">
-                <span>Annual premium</span>
-                <span>{formatCurrency(annualTotal)}</span>
-              </div>
+                  <div className="mt-6 h-[2px] bg-navy" />
+                  <div className="mt-4 flex items-center justify-between text-[24px] font-black text-navy">
+                    <span>Annual premium</span>
+                    <span>{formatCurrency(annualTotal)}</span>
+                  </div>
+                </>
+              )}
             </Card>
 
             <div className="mt-6">
@@ -504,7 +544,14 @@ export default function QuoteReviewStep() {
               <div className="my-5 h-px bg-grey-200" />
 
               <Button className="w-full" onClick={handleSecureCover}>
-                Secure Your Cover
+                {showButtonLoading ? (
+                  <span className="inline-flex items-center gap-2">
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+                    {buttonLabel}
+                  </span>
+                ) : (
+                  "Secure Your Cover"
+                )}
               </Button>
               <div className="mt-3 flex items-center justify-center gap-2 text-[13px] text-grey-500">
                 <Lock className="h-4 w-4" />
@@ -548,9 +595,24 @@ export default function QuoteReviewStep() {
           </div>
         )}
         <Button className="mt-3 w-full" onClick={handleSecureCover}>
-          Secure Your Cover
+          {showButtonLoading ? (
+            <span className="inline-flex items-center gap-2">
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/70 border-t-white" />
+              {buttonLabel}
+            </span>
+          ) : (
+            "Secure Your Cover"
+          )}
         </Button>
       </div>
     </section>
+  );
+}
+
+export default function QuoteReviewStep() {
+  return (
+    <StepTransition>
+      <QuoteReviewStepContent />
+    </StepTransition>
   );
 }
