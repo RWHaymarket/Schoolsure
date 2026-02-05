@@ -27,7 +27,9 @@ export default function StickyQuoteCTA() {
       { threshold: 0.2 }
     );
 
-    heroObserver.observe(hero);
+    if (hero) {
+      heroObserver.observe(hero);
+    }
 
     const footerObserver = new IntersectionObserver(
       ([entry]) => {

@@ -1,6 +1,19 @@
-import { Clock, School, Shield } from "lucide-react";
+import { Clock, School, type LucideIcon } from "lucide-react";
 
-const trustItems = [
+type TrustItem =
+  | {
+      type: "lloyds";
+      title: string;
+      description: string;
+    }
+  | {
+      type: "icon";
+      icon: LucideIcon;
+      title: string;
+      description: string;
+    };
+
+const trustItems: TrustItem[] = [
   {
     type: "lloyds",
     title: "Backed by Lloyd's of London",

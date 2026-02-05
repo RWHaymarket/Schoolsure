@@ -106,10 +106,10 @@ type FormValues = z.infer<typeof formSchema>;
 const selectClassName =
   "h-[52px] w-full rounded-[10px] border-2 border-transparent bg-grey-100 px-4 text-base text-navy transition-all duration-150 ease-out focus:border-magenta focus:bg-white focus:outline-none focus:ring-4 focus:ring-magenta/20";
 
-const getFirstErrorName = (
-  errors: Record<string, unknown>,
-  prefix = ""
-): string | null => {
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  Boolean(value) && typeof value === "object" && !Array.isArray(value);
+
+const getFirstErrorName = (errors: Record<string, unknown>, prefix = ""): string | null => {
   for (const key of Object.keys(errors)) {
     const value = errors[key];
     if (
@@ -120,7 +120,7 @@ const getFirstErrorName = (
     ) {
       return `${prefix}${key}`;
     }
-    if (value && typeof value === "object") {
+    if (isRecord(value)) {
       const nested = getFirstErrorName(value, `${prefix}${key}.`);
       if (nested) return nested;
     }
@@ -195,8 +195,14 @@ function QuoteDetailsStepContent() {
   useEffect(() => {
     const subscription = form.watch((values) => {
       if (!values) return;
-      const nextChildren = (values.children || []).map((child) => ({
-        ...child,
+      const nextChildren = (values.children || [])
+        .filter((child): child is FormValues["children"][number] => Boolean(child))
+        .map((child) => ({
+        firstName: child.firstName ?? "",
+        lastName: child.lastName ?? "",
+        dateOfBirth: child.dateOfBirth ?? "",
+        gender: child.gender ?? "",
+        yearLevel: child.yearLevel ?? "",
         schoolName,
         annualFee: annualFees,
       }));

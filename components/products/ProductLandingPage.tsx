@@ -113,6 +113,7 @@ export default function ProductLandingPage({
 }: {
   product: ProductLandingConfig;
 }) {
+  const pricingSection = product.pricingSection;
   const [showSkeleton, setShowSkeleton] = useState(true);
   const prefersReducedMotion = useMemo(() => {
     if (typeof window === "undefined") return true;
@@ -291,38 +292,38 @@ export default function ProductLandingPage({
             No hidden fees. No surprises.
           </p>
           {showSkeleton ? (
-            product.pricingSection.type === "table" ? (
+            pricingSection.type === "table" ? (
               <SkeletonTable
-                rows={product.pricingSection.rows.length}
-                columns={product.pricingSection.columns.length}
+                rows={pricingSection.rows.length}
+                columns={pricingSection.columns.length}
                 className="mt-8"
               />
             ) : (
               <SkeletonCard className="mt-8 mx-auto max-w-[400px]" lines={4} />
             )
-          ) : product.pricingSection.type === "table" ? (
+          ) : pricingSection.type === "table" ? (
             <div className="mt-8 overflow-hidden rounded-2xl border border-grey-300 bg-white text-left">
               <div
                 className="grid bg-navy text-[14px] font-semibold text-white"
                 style={{
-                  gridTemplateColumns: `repeat(${product.pricingSection.columns.length}, minmax(0, 1fr))`,
+                  gridTemplateColumns: `repeat(${pricingSection.columns.length}, minmax(0, 1fr))`,
                 }}
               >
-                {product.pricingSection.columns.map((column) => (
+                {pricingSection.columns.map((column) => (
                   <div key={column} className="px-4 py-3">
                     {column}
                   </div>
                 ))}
               </div>
               <div>
-                {product.pricingSection.rows.map((row, index) => (
+                {pricingSection.rows.map((row, index) => (
                   <div
                     key={`${row[0]}-${index}`}
                     className={`grid text-[16px] text-navy ${
                       index % 2 === 1 ? "bg-grey-100" : "bg-white"
                     }`}
                     style={{
-                      gridTemplateColumns: `repeat(${product.pricingSection.columns.length}, minmax(0, 1fr))`,
+                      gridTemplateColumns: `repeat(${pricingSection.columns.length}, minmax(0, 1fr))`,
                     }}
                   >
                     {row.map((cell, cellIndex) => (
@@ -337,14 +338,14 @@ export default function ProductLandingPage({
           ) : (
             <div className="mt-8 mx-auto max-w-[400px] rounded-2xl border border-grey-300 bg-white p-8 text-center">
               <div className="text-[48px] font-black text-magenta">
-                {product.pricingSection.price}
+                {pricingSection.price}
               </div>
               <div className="text-[16px] text-grey-700">
-                {product.pricingSection.subtext}
+                {pricingSection.subtext}
               </div>
               <div className="my-4 h-px bg-grey-300" />
               <div className="space-y-3 text-left text-[14px] text-grey-700">
-                {product.pricingSection.items.map((item) => {
+                {pricingSection.items.map((item) => {
                   const ItemIcon = ICONS[item.icon];
                   return (
                     <div
@@ -362,18 +363,18 @@ export default function ProductLandingPage({
               </div>
               <div className="my-4 h-px bg-grey-300" />
               <div className="text-[16px] font-semibold text-navy">
-                {product.pricingSection.maxLabel}
+                {pricingSection.maxLabel}
               </div>
             </div>
           )}
           <p className="mt-4 text-[14px] text-grey-500">
-            {product.pricingSection.note}
+            {pricingSection.note}
           </p>
           <Link
             href={product.ctaLink}
             className="mt-4 inline-flex items-center gap-2 text-[16px] font-semibold text-magenta"
           >
-            {product.pricingSection.ctaLabel} →
+            {pricingSection.ctaLabel} →
           </Link>
         </div>
       </section>

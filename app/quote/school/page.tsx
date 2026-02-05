@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Lock, ShieldCheck } from "lucide-react";
 
@@ -231,8 +231,10 @@ function QuoteSchoolStepContent() {
 
 export default function QuoteSchoolStep() {
   return (
-    <StepTransition>
-      <QuoteSchoolStepContent />
-    </StepTransition>
+    <Suspense fallback={<div />}>
+      <StepTransition>
+        <QuoteSchoolStepContent />
+      </StepTransition>
+    </Suspense>
   );
 }

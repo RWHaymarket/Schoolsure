@@ -370,23 +370,26 @@ function shuffle<T>(list: T[], seed: number) {
 
 function buildPool<T extends string>(total: number, ratios: Record<T, number>) {
   const entries = Object.entries(ratios) as Array<[T, number]>;
-  const counts = entries.map(([key, ratio]) => [key, Math.round(total * ratio)] as const);
-  let sum = counts.reduce((acc, [, count]) => acc + count, 0);
+  const counts = entries.map(([key, ratio]) => ({
+    key,
+    count: Math.round(total * ratio),
+  }));
+  let sum = counts.reduce((acc, item) => acc + item.count, 0);
   while (sum < total) {
-    counts.sort((a, b) => b[1] - a[1]);
-    counts[0][1] += 1;
+    counts.sort((a, b) => b.count - a.count);
+    counts[0].count += 1;
     sum += 1;
   }
   while (sum > total) {
-    counts.sort((a, b) => b[1] - a[1]);
-    if (counts[0][1] > 1) {
-      counts[0][1] -= 1;
+    counts.sort((a, b) => b.count - a.count);
+    if (counts[0].count > 1) {
+      counts[0].count -= 1;
       sum -= 1;
     } else {
       break;
     }
   }
-  return counts.flatMap(([key, count]) => Array(count).fill(key));
+  return counts.flatMap((item) => Array(item.count).fill(item.key));
 }
 
 function getMonthsBetween(start: Date, end: Date) {
@@ -818,39 +821,40 @@ export const activityFeed: ActivityItem[] = [
     id: `quote-${quote.id}`,
     date: quote.createdAt,
     tone:
-      quote.status === "abandoned"
+      (quote.status === "abandoned"
         ? "warning"
         : quote.status === "expired"
         ? "warning"
-        : "info",
+        : "info") as ActivityItem["tone"],
     description: `Quote ${quote.id} created — ${quote.parent.firstName} ${quote.parent.lastName}`,
     href: `/admin/quotes`,
   })),
   ...policies.map((policy) => ({
     id: `policy-${policy.id}`,
     date: policy.startDate,
-    tone: "success",
+    tone: "success" as ActivityItem["tone"],
     description: `New policy ${policy.id} — ${policy.parent.firstName} ${policy.parent.lastName}`,
     href: `/admin/policies`,
   })),
   ...placements.map((placement) => ({
     id: `placement-${placement.id}`,
     date: placement.purchaseDate,
-    tone: "accent",
+    tone: "accent" as ActivityItem["tone"],
     description: `Placement cover ${placement.id} — ${placement.parent.firstName} ${placement.parent.lastName}`,
     href: `/admin/financials`,
   })),
   ...amendments.map((amendment) => ({
     id: `amendment-${amendment.id}`,
     date: amendment.createdAt,
-    tone: "accent",
+    tone: "accent" as ActivityItem["tone"],
     description: `Amendment ${amendment.id} — ${amendment.description}`,
     href: `/admin/policies`,
   })),
   ...renewals.map((renewal) => ({
     id: `renewal-${renewal.id}`,
     date: renewal.renewalDate,
-    tone: renewal.status === "renewed" ? "success" : "warning",
+    tone:
+      (renewal.status === "renewed" ? "success" : "warning") as ActivityItem["tone"],
     description: `Renewal ${renewal.id} — ${renewal.status}`,
     href: `/admin/policies`,
   })),
@@ -858,7 +862,8 @@ export const activityFeed: ActivityItem[] = [
     policy.claims.map((claim) => ({
       id: `claim-${claim.id}`,
       date: claim.submittedAt,
-      tone: claim.status === "paid" ? "success" : "info",
+      tone:
+        (claim.status === "paid" ? "success" : "info") as ActivityItem["tone"],
       description: `Claim ${claim.id} — ${claim.childName} (${claim.status})`,
       href: `/admin/policies`,
     }))

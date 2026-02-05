@@ -18,7 +18,13 @@ const yearLevels = [
   { label: "7–12", value: "7-12" },
   { label: "Senior (11-12)", value: "senior" },
 ] as const;
-const areas = [
+type AreaOption = {
+  label: string;
+  value: string;
+  disabled?: boolean;
+};
+
+const areas: AreaOption[] = [
   { label: "All Areas", value: "" },
   { label: "── Sydney Metro ──", value: "", disabled: true },
   { label: "Sydney City", value: "Sydney" },

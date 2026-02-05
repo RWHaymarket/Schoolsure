@@ -134,7 +134,7 @@ function QuoteReviewStepContent() {
     setSaveQuoteState("sent");
   };
 
-  const renderPdsConsent = (ref: RefObject<HTMLDivElement>) => (
+  const renderPdsConsent = (ref: RefObject<HTMLDivElement | null>) => (
     <div
       ref={ref}
       className={`rounded-xl border p-4 text-[12px] text-grey-500 ${

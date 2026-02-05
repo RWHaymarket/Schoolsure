@@ -18,7 +18,7 @@ import {
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
-import ScenariosSection from "@/components/products/ScenariosSection";
+import ScenariosSection, { type IconKey } from "@/components/products/ScenariosSection";
 import { PRICING_CONFIG } from "@/lib/pricing-config";
 import { formatCurrency } from "@/lib/utils";
 
@@ -36,7 +36,13 @@ const formatLimit = (limit: number) => `Up to ${formatCurrency(limit)}`;
 const emailRegex = /^\S+@\S+\.\S+$/;
 
 export default function PlacementPageClient() {
-  const scenarios = [
+  const scenarios: Array<{
+    icon: IconKey;
+    title: string;
+    story: string;
+    outcome: string;
+    tag: string;
+  }> = [
     {
       icon: "briefcase",
       title: "Unexpected relocation",

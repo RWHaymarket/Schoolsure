@@ -142,11 +142,24 @@ export default function AdminFinancialsPage() {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {[
-          ["Total GWP", totals.gwp, "Year to date"],
-          ["Commission (35%)", totals.commission, "Niche Insurance revenue", true],
-          ["Net to Arch", totals.netToUnderwriter, "Underwriter share (65%)"],
-          ["Stamp Duty Collected", totals.stampDuty, "Payable to state revenue offices"],
-        ].map(([label, value, note, highlight]) => (
+          { label: "Total GWP", value: totals.gwp, note: "Year to date" },
+          {
+            label: "Commission (35%)",
+            value: totals.commission,
+            note: "Niche Insurance revenue",
+            highlight: true,
+          },
+          {
+            label: "Net to Arch",
+            value: totals.netToUnderwriter,
+            note: "Underwriter share (65%)",
+          },
+          {
+            label: "Stamp Duty Collected",
+            value: totals.stampDuty,
+            note: "Payable to state revenue offices",
+          },
+        ].map(({ label, value, note, highlight }) => (
           <div key={label} className="admin-card flex flex-col gap-2 p-6">
             <div className="text-[11px] font-semibold uppercase tracking-wide text-[var(--admin-text-muted)]">
               {label}
@@ -269,9 +282,9 @@ export default function AdminFinancialsPage() {
         </div>
         <div className="grid gap-4 md:grid-cols-2">
           {[
-            ["Monthly", paymentFrequencySplit.monthly],
-            ["Annual", paymentFrequencySplit.annual],
-          ].map(([label, data]) => (
+            { label: "Monthly", data: paymentFrequencySplit.monthly },
+            { label: "Annual", data: paymentFrequencySplit.annual },
+          ].map(({ label, data }) => (
             <div key={label} className="rounded-md bg-[var(--admin-surface)] p-4">
               <div className="text-xs text-[var(--admin-text-muted)]">{label}</div>
               <div className="text-lg font-semibold text-[var(--admin-text)]">
