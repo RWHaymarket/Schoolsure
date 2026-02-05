@@ -66,7 +66,7 @@ export default function AccountAddCoverPage() {
 
       {availableAddOns.length ? (
         <div className="space-y-4">
-          {availableAddOns.map((addon) => (
+          {availableAddOns.filter(Boolean).map((addon) => (
             <Card key={addon.title} className="rounded-2xl border border-grey-200">
               <div className="flex items-start gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-magenta/10">
