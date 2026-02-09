@@ -45,7 +45,7 @@ export default function FaqSection({
         </div>
 
         <div
-          className={`mt-10 grid gap-2 ${
+          className={`mt-10 grid gap-0 ${
             columns === 2 ? "md:grid-cols-2" : "grid-cols-1"
           }`}
         >
@@ -55,6 +55,7 @@ export default function FaqSection({
             const showCategory =
               faq.category && faq.category !== previousCategory;
             const answerId = `faq-answer-${index}`;
+            const questionId = `faq-question-${index}`;
             return (
               <div key={faq.question} className="flex flex-col">
                 {showCategory ? (
@@ -69,13 +70,15 @@ export default function FaqSection({
                 ) : null}
                 <div
                   className={cn(
-                    "rounded-xl overflow-hidden",
+                    "overflow-hidden border-b border-grey-200",
                     itemBgClass,
-                    showCategory ? "mt-3" : "mt-0"
+                    showCategory ? "mt-3" : "mt-0",
+                    index === 0 ? "border-t" : "border-t-0"
                   )}
                 >
                   <button
                     type="button"
+                    id={questionId}
                     aria-expanded={isOpen}
                     aria-controls={answerId}
                     onClick={() => setOpenIndex(isOpen ? -1 : index)}
@@ -93,11 +96,19 @@ export default function FaqSection({
                   <div
                     id={answerId}
                     role="region"
-                    className={`grid transition-[grid-template-rows] duration-300 ease-out ${
-                      isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"
-                    }`}
+                    aria-labelledby={questionId}
+                    style={{ transition: "max-height 0.3s ease, opacity 0.2s ease" }}
+                    className={cn(
+                      "overflow-hidden",
+                      isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0"
+                    )}
                   >
-                    <div className="overflow-hidden px-6 pb-5 text-[16px] leading-relaxed text-grey-700">
+                    <div
+                      className={cn(
+                        "px-6 text-[16px] leading-relaxed text-grey-600",
+                        isOpen ? "pb-5" : "pb-0"
+                      )}
+                    >
                       {faq.answer.split("\n\n").map((paragraph) => (
                         <p key={paragraph} className="mb-3 last:mb-0">
                           {paragraph}
